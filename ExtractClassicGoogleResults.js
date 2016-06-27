@@ -1,7 +1,7 @@
 (function(){
   var t = {
     log: {beeping: true},
-    scriptUrl: "//localhost:4443/extract_google_results.js"
+    scriptUrl: "//medialab.github.io/google-bookmarklets/extract_google_results.js"
   }, e = !0;
   if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(t), artoo.exec(), artoo.beep(), e = !1)), e){
     var bod = document.getElementsByTagName("body")[0];
