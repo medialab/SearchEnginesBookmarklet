@@ -1,0 +1,41 @@
+<html>
+<title>Google Bookmarklets</title>
+<style>
+body {
+  font-family: Sans-serif;
+  margin: auto;
+  padding-top: 3%;
+  text-align: center;
+}
+img {
+  height: 48px;
+  margin: 12px;
+}
+</style>
+<body>
+<h1>Install Google Bookmarklets</h1>
+
+<p>Drag &amp; drop images below into your bookmark bar:</p>
+
+<a id="bookmark1" href=""><img src="images/old-google.png" alt="SwitchToClassicGoogle"/></a>
+<a id="bookmark2" href=""><img src="images/new-google.png" alt="ExtractGoogleResultsPage"/></a>
+
+</body>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  var buildBookmarklet = function(hrefId, scriptName){
+    var res = "javascript:(function(){" +
+                "var script = document.createElement('script');" +
+                "script.type = 'text/javascript';" +
+                "script.src = '" + window.location.href.replace(/^https?:/, '').replace(/\/?(index.html)?$/, '/') + scriptName + ".js';" +
+                "var bod = document.getElementsByTagName('body')[0];" +
+                "bod || (bod = document.createElement('body'), document.documentElement.appendChild(bod));" +
+                "bod.appendChild(script);" +
+              "})()";
+    document.getElementById(hrefId).href = res.replace(/\s+/g, '%20');
+  };
+  buildBookmarklet("bookmark1", "SwitchToClassicGoogle");
+  buildBookmarklet("bookmark2", "ExtractClassicGoogleResults");
+});
+</script>
+</html>
