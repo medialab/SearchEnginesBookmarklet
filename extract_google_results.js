@@ -10,6 +10,6 @@
   artoo.log.verbose(query, start, total, page, data.length);
   artoo.saveCsv(data, "google-results-"+query+"-"+page+".csv");
   if (window.confirm("CSV downloaded with "+data.length+" results from page "+page+" of Google results for query "+ query + "\nDo you want to go to the next page?")) {
-    window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + hlang + "&num=" + total + "&start=" + (start + num);
+    window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + hlang + "&num=" + total + "&start=" + (start + total);
   }
 })();
