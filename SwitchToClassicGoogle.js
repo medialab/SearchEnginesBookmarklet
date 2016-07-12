@@ -1,8 +1,7 @@
 (function(){
   var t = {
-    //log: {beeping: true},
-    scriptUrl: "//localhost:4443/switch_classic_google.js" // debug
-    //scriptUrl: "//medialab.github.io/google-bookmarklets/switch_classic_google.js"
+    //scriptUrl: "//localhost:4443/switch_classic_google.js" // for debug using `node serve-https.js`
+    scriptUrl: "//medialab.github.io/google-bookmarklets/switch_classic_google.js"
   }, injectScript = function(body, url, name, settings){
     var a = document.createElement("script");
     console.log("Loading "+name+".js...");
@@ -12,10 +11,9 @@
     if (settings) a.setAttribute("settings", JSON.stringify(settings));
     body.appendChild(a);
   }, e = !0,
-    loc = window.location,
-    href = loc.href,
+    href = window.location.href,
     query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
-  if (!~window.location.href.search(/:\/\/([^.]+\.)?google\.[^/]+\//))
+  if (!~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//))
     return window.alert("You can only use this bookmarklet on Google websites.");
   else if (!query)
     return window.alert("Please search for a keyword first.");

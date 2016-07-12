@@ -1,7 +1,6 @@
 (function(){
   var t = {
-    //log: {beeping: true},
-    //scriptUrl: "//localhost:4443/extract_google_results.js" // debug
+    //scriptUrl: "//localhost:4443/extract_google_results.js" // for debug using `node serve-https.js`
     scriptUrl: "//medialab.github.io/google-bookmarklets/extract_google_results.js"
   }, injectScript = function(body, url, name, settings){
     var a = document.createElement("script");
@@ -11,7 +10,13 @@
     a.id = name + "_injected_script";
     if (settings) a.setAttribute("settings", JSON.stringify(settings));
     body.appendChild(a);
-  }, e = !0;
+  }, e = !0,
+    href = window.location.href,
+    query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
+  if (!~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//))
+    return window.alert("You can only use this bookmarklet on Google websites.");
+  else if (!query)
+    return window.alert("Please search for a keyword first.");
   if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(t), artoo.exec(), e = !1)), e){
     var bod = document.getElementsByTagName("body")[0];
     bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
