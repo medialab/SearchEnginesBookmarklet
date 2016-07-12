@@ -1,6 +1,6 @@
 (function(){
   var t = {
-    log: {beeping: true},
+    //log: {beeping: true},
     scriptUrl: "//medialab.github.io/google-bookmarklets/extract_google_results.js"
   }, e = !0;
   if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(t), artoo.exec(), artoo.beep(), e = !1)), e){
@@ -13,5 +13,12 @@
     a.id = "artoo_injected_script";
     a.setAttribute("settings", JSON.stringify(t));
     bod.appendChild(a);
+    var b = document.createElement("script");
+    console.log("Loading FileSaver.js...");
+    b.src = "//raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.min.js";
+    b.type = "text/javascript";
+    b.id = "filesaver_injected_script";
+    b.setAttribute("settings", JSON.stringify(t));
+    bod.appendChild(b);
   }
 }).call(this);
