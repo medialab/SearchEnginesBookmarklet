@@ -15,7 +15,7 @@
     bod.appendChild(a);
     var b = document.createElement("script");
     console.log("Loading FileSaver.js...");
-    b.src = "//raw.githubusercontent.com/eligrey/FileSaver.js/master/FileSaver.min.js";
+    b.src = "//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js";
     b.type = "text/javascript";
     b.id = "filesaver_injected_script";
     b.setAttribute("settings", JSON.stringify(t));
