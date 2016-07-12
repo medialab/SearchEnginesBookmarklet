@@ -1,13 +1,27 @@
 (function(){
-  var loc = window.location,
+  var t = {
+    //log: {beeping: true},
+    scriptUrl: "//localhost:4443/switch_classic_google.js" // debug
+    //scriptUrl: "//medialab.github.io/google-bookmarklets/switch_classic_google.js"
+  }, injectScript = function(body, url, name, settings){
+    var a = document.createElement("script");
+    console.log("Loading "+name+".js...");
+    a.src = url;
+    a.type = "text/javascript";
+    a.id = name + "_injected_script";
+    if (settings) a.setAttribute("settings", JSON.stringify(settings));
+    body.appendChild(a);
+  }, e = !0,
+    loc = window.location,
     href = loc.href,
-    query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
-    hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&](hl=[^#?&]+).*$/, '&$1') : '&hl=fr'),
-    total = (~href.search(/num=/) ? href.replace(/^.*[#?&](num=\d+).*$/, '&$1') : '&num=100'),
-    start = (~href.search(/start=/) ? href.replace(/^.*[#?&](start=\d+).*$/, '&$1') : '');
+    query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
   if (!~window.location.href.search(/:\/\/([^.]+\.)?google\.[^/]+\//))
     return window.alert("You can only use this bookmarklet on Google websites.");
   else if (!query)
     return window.alert("Please search for a keyword first.");
-  window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + hlang + total + start;
-})();
+  if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(t), artoo.exec(), e = !1)), e){
+    var bod = document.getElementsByTagName("body")[0];
+    bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
+    injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", t);
+  }
+}).call(this);
