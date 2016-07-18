@@ -6,7 +6,37 @@
     total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100),
     start = (~href.search(/start=/) ? parseInt(href.replace(/^.*[#?&]start=(\d+).*$/, '$1')) : 0),
     page = start/total,
-    data = artoo.scrape("h3.r a", {"url": "href", "name": "text"}),
+    data = artoo.scrape(".rc", {
+      url: {
+        sel: 'h3.r a',
+        attr: 'href'
+      },
+      name: {
+        sel: 'h3.r a',
+        method: 'text'
+      },
+      row: {
+        sel: 'h3.r a',
+        method: function($){
+          return +$(this).attr('onmousedown').replace(/^.*,'','(\d+)','.*$/, '$1');
+        }
+      },
+      description: {
+        sel: 'div.s span.st',
+        method: function($){
+          var linkdate = artoo.scrape($(this).find('span.f'), 'text'),
+            wholedescr = $(this).text();
+          if (linkdate) return wholedescr.replace(linkdate, '');
+          return wholedescr;
+        }
+      },
+      date: {
+        sel: 'div.s span.st span.f',
+        method: function($){
+          return $(this).text().replace(/ - $/, '');
+        }
+      }
+    }),
     blob = new Blob([artoo.writers.csv(data)], {type: "text/plain;charset=utf-8"});
   artoo.log.verbose(data.length + " results for query '" + query + "' on page " + page);
   saveAs(blob, "google-results-" + query + "-" + page + ".csv");
