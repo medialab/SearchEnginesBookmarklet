@@ -12,9 +12,9 @@
     body.appendChild(a);
   }, e = !0,
     href = window.location.href,
-    query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
+    query = (~href.search(/[?&]q=/) ? href.replace(/^.*[?&]q=([^#?&]+).*$/, '$1') : undefined);
   if (!~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//))
-    return window.alert("You can only use this bookmarklet on Google websites.");
+    return window.alert("You can only use this bookmarklet on Google's classic search.");
   else if (!query)
     return window.alert("Please search for a keyword first.");
   if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(t), artoo.exec(), e = !1)), e){

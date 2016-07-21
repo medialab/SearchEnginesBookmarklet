@@ -2,11 +2,15 @@
   var loc = window.location,
     href = loc.href,
     query = href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1'),
-    hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&](hl=[^#?&]+).*$/, '&$1') : '&hl=fr'),
+    hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : 'fr'),
     total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100),
     start = (~href.search(/start=/) ? parseInt(href.replace(/^.*[#?&]start=(\d+).*$/, '$1')) : 0),
     page = start/total,
-    data = artoo.scrape(".rc", {
+    storage = 'scrap-query',
+    storageKey = query + '/' + hlang + '/' + total,
+    url_index = 0,
+    pastdata, fulldata,
+    newdata = artoo.scrape(".rc", {
       url: {
         sel: 'h3.r a',
         attr: 'href'
@@ -18,7 +22,18 @@
       row: {
         sel: 'h3.r a',
         method: function($){
-          return +$(this).attr('onmousedown').replace(/^.*,'','(\d+)','.*$/, '$1');
+          var tmpidx = +($(this).attr('onmousedown') || '').replace(/^.*,'','(\d+)','.*$/, '$1');
+          if (!tmpidx) {
+            var fallbk = $(this).parent().parent().find('a.ab_button');
+            if (fallbk.length) {
+              tmpidx = fallbk[0].attr('id').replace(/am-b/, '');
+            }
+          }
+          if (tmpidx) {
+            url_index = tmpidx;
+            return tmpidx;
+          }
+          return tmpidx++;
         }
       },
       description: {
@@ -37,12 +52,79 @@
         }
       }
     }),
-    blob = new Blob([artoo.writers.csv(data)], {type: "text/plain;charset=utf-8"});
-  artoo.log.verbose(data.length + " results for query '" + query + "' on page " + page);
-  saveAs(blob, "google-results-" + query + "-" + page + ".csv");
-  setTimeout(function(){
-    if (window.confirm("CSV downloaded with "+data.length+" results from page "+page+" of Google results for query " + query + "\nDo you want to go to the next page?")) {
-      window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + hlang + "&num=" + total + "&start=" + (start + total);
+    styles = [
+      '#overlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 250px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
+      'h2 {margin: 0px 0px 15px 0px; text-decoration: underline;}',
+      'input[type="button"] {margin: 3px;}',
+      ''
+    ],
+    ui = new artoo.ui(),
+    initStore = function(){
+      artoo.store.set(storage, storageKey);
+      artoo.store.set(storage + '-pages', []);
+      artoo.store.set(storage + '-data', []);
+      pastdata = [];
+      fulldata = newdata;
+    };
+
+  artoo.store.concatTo = function(key, arr) {
+    artoo.store.set(key, artoo.store(key).concat(arr));
+  }
+
+  if (artoo.store(storage) !== storageKey) {
+    initStore();
+  } else {
+    pastdata = artoo.store(storage + '-data') || [];
+  }
+
+  ui.$().html('<style>' + styles.join('\n') + '</style>' +
+              '<div id="overlay">' +
+                '<h2>Extract Classic Google Results</h2>' +
+                '<p> Search for "<b>' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>"<br/>' +
+                  'page ' + page + ' (with up to ' + total + ' urls per page)</p>' +
+                '<p id="pageresults"></p>' +
+                '<p id="oldresults"></p>' +
+                '<input id="continue" type="button" value="Keep existing results & continue to the next page"></input><br/>' +
+                '<input id="download" type="button"></input><br/>' +
+                '<input id="downloadAll" type="button"></input>' +
+                '<input id="reset" type="button" value="Clear existing results from cache"></input>' +
+              '</div>');
+
+  ui.refresh = function(){
+    var donepages = artoo.store(storage + '-pages').sort().join('|');
+    if (!~artoo.store(storage + '-pages').indexOf(page)) {
+      fulldata = pastdata.concat(newdata);
+      artoo.store.concatTo(storage + '-pages', page);
+      artoo.store.concatTo(storage + '-data', newdata);
+      ui.$('#pageresults').html('<b>' + newdata.length + ' new results in this page</b>');
+    } else {
+      fulldata = pastdata;
+      ui.$('#pageresults').html('no new result in this page');
     }
-  }, 350);
+    ui.$('#downloadAll').val('Download complete CSV with all ' + fulldata.length + ' urls');
+    if (pastdata.length) {
+      ui.$('#oldresults').html('(already ' + pastdata.length + ' results collected from page' + (~donepages.search(/\|/) ? 's ' : ' ') + donepages + ')').show();
+      ui.$('#downloadAll, #reset').show();
+      ui.$('#download').val('Download CSV with only this page\'s results (' + newdata.length + ')');
+    } else {
+      ui.$('#oldresults').hide();
+      ui.$('#downloadAll, #reset').hide();
+      ui.$('#download').val('Download CSV with ' + newdata.length + ' urls');
+    }
+  };
+  ui.refresh();
+
+  ui.$("#reset").on('click', function(){
+    initStore();
+    ui.refresh();
+  });
+  ui.$("#download").on('click', function(){
+    saveAs(new Blob([artoo.writers.csv(newdata)], {type: "text/plain;charset=utf-8"}), "google-results-" + hlang + "-" + query + "-page" + page + ".csv");
+  });
+  ui.$("#downloadAll").on('click', function(){
+    saveAs(new Blob([artoo.writers.csv(fulldata)], {type: "text/plain;charset=utf-8"}), "google-results-" + hlang + "-" + query + "-pages" + artoo.store(storage + '-pages').sort().join('-') + ".csv");
+  });
+  ui.$("#continue").on('click', function(){
+    window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&hl=' + hlang + "&num=" + total + "&start=" + (start + total);
+  });
 })();
