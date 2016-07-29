@@ -53,12 +53,10 @@
       }
     }),
     styles = [
-      '#overlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 250px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
-      'h2 {margin: 0px 0px 15px 0px; text-decoration: underline;}',
-      'input[type="button"] {margin: 3px;}',
-      ''
+      '#GBMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 250px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
+      '#GBMoverlay h2 {margin: 0px 0px 15px 0px; text-decoration: underline;}',
+      '#GBMoverlay input[type="button"] {margin: 3px;}'
     ],
-    ui = new artoo.ui(),
     initStore = function(){
       artoo.store.set(storage, storageKey);
       artoo.store.set(storage + '-pages', []);
@@ -77,54 +75,54 @@
     pastdata = artoo.store(storage + '-data') || [];
   }
 
-  ui.$().html('<style>' + styles.join('\n') + '</style>' +
-              '<div id="overlay">' +
-                '<h2>Extract Classic Google Results</h2>' +
-                '<p> Search for "<b>' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>"<br/>' +
-                  'page ' + page + ' (with up to ' + total + ' urls per page)</p>' +
-                '<p id="pageresults"></p>' +
-                '<p id="oldresults"></p>' +
-                '<input id="continue" type="button" value="Keep existing results & continue to the next page"></input><br/>' +
-                '<input id="download" type="button"></input><br/>' +
-                '<input id="downloadAll" type="button"></input>' +
-                '<input id="reset" type="button" value="Clear existing results from cache"></input>' +
-              '</div>');
+  artoo.$('body').append('<style>' + styles.join('\n') + '</style>' +
+    '<div id="GBMoverlay">' +
+      '<h2>Extract Classic Google Results</h2>' +
+      '<p>Search for "<b>' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>"<br/>' +
+        'page ' + page + ' (with up to ' + total + ' urls per page)</p>' +
+      '<p class="GBMpageresults"></p>' +
+      '<p class="GBMoldresults"></p>' +
+      '<input class="GBMcontinue" type="button" value="Keep existing results & continue to the next page"></input><br/>' +
+      '<input class="GBMdownload" type="button"></input><br/>' +
+      '<input class="GBMdownloadAll" type="button"></input>' +
+      '<input class="GBMreset" type="button" value="Clear existing results from cache"></input>' +
+    '</div>');
 
-  ui.refresh = function(){
+  var refresh = function(){
     var donepages = artoo.store(storage + '-pages').sort().join('|');
     if (!~artoo.store(storage + '-pages').indexOf(page)) {
       fulldata = pastdata.concat(newdata);
       artoo.store.concatTo(storage + '-pages', page);
       artoo.store.concatTo(storage + '-data', newdata);
-      ui.$('#pageresults').html('<b>' + newdata.length + ' new results in this page</b>');
+      artoo.$('#GBMoverlay .GBMpageresults').html('<b>' + newdata.length + ' new results in this page</b>');
     } else {
       fulldata = pastdata;
-      ui.$('#pageresults').html('no new result in this page');
+      artoo.$('#GBMoverlay .GBMpageresults').html('no new result in this page');
     }
-    ui.$('#downloadAll').val('Download complete CSV with all ' + fulldata.length + ' urls');
+    artoo.$('#GBMoverlay .GBMdownloadAll').val('Download complete CSV with all ' + fulldata.length + ' urls');
     if (pastdata.length) {
-      ui.$('#oldresults').html('(already ' + pastdata.length + ' results collected from page' + (~donepages.search(/\|/) ? 's ' : ' ') + donepages + ')').show();
-      ui.$('#downloadAll, #reset').show();
-      ui.$('#download').val('Download CSV with only this page\'s results (' + newdata.length + ')');
+      artoo.$('#GBMoverlay .GBMoldresults').html('(already ' + pastdata.length + ' results collected from page' + (~donepages.search(/\|/) ? 's ' : ' ') + donepages + ')').show();
+      artoo.$('#GBMoverlay .GBMdownloadAll, #GBMoverlay .GBMreset').show();
+      artoo.$('#GBMoverlay .GBMdownload').val('Download CSV with only this page\'s results (' + newdata.length + ')');
     } else {
-      ui.$('#oldresults').hide();
-      ui.$('#downloadAll, #reset').hide();
-      ui.$('#download').val('Download CSV with ' + newdata.length + ' urls');
+      artoo.$('#GBMoverlay .GBMoldresults').hide();
+      artoo.$('#GBMoverlay .GBMdownloadAll, #GBMoverlay .GBMreset').hide();
+      artoo.$('#GBMoverlay .GBMdownload').val('Download CSV with ' + newdata.length + ' urls');
     }
   };
-  ui.refresh();
+  refresh();
 
-  ui.$("#reset").on('click', function(){
+  artoo.$("#GBMoverlay .GBMreset").on('click', function(){
     initStore();
-    ui.refresh();
+    refresh();
   });
-  ui.$("#download").on('click', function(){
+  artoo.$("#GBMoverlay .GBMdownload").on('click', function(){
     saveAs(new Blob([artoo.writers.csv(newdata)], {type: "text/plain;charset=utf-8"}), "google-results-" + hlang + "-" + query + "-page" + page + ".csv");
   });
-  ui.$("#downloadAll").on('click', function(){
+  artoo.$("#GBMoverlay .GBMdownloadAll").on('click', function(){
     saveAs(new Blob([artoo.writers.csv(fulldata)], {type: "text/plain;charset=utf-8"}), "google-results-" + hlang + "-" + query + "-pages" + artoo.store(storage + '-pages').sort().join('-') + ".csv");
   });
-  ui.$("#continue").on('click', function(){
+  artoo.$("#GBMoverlay .GBMcontinue").on('click', function(){
     window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&hl=' + hlang + "&num=" + total + "&start=" + (start + total);
   });
 })();
