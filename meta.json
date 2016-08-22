@@ -1,9 +1,9 @@
 {
   "name": "Google Bookmarklets",
-  "authors": ["Benjamin Ooghe-tabanou"],
+  "authors": ["Benjamin Ooghe-Tabanou"],
   "url": "https://medialab.github.io/google-bookmarklets/",
   "source": "https://github.com/medialab/google-bookmarklets",
   "licence": "GPL v3",
   "visual": "",
-  "description": "Simply extract as CSV the list of search results from Google within your browser using bookmarklets."
+  "description": "Easily change a Google Search into its 100 results version and extract a CSV of all results within your browser using bookmarklets."
 }
