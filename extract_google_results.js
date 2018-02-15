@@ -26,7 +26,7 @@
           if (!tmpidx) {
             var fallbk = $(this).parent().parent().find('a.ab_button');
             if (fallbk.length) {
-              tmpidx = fallbk[0].attr('id').replace(/am-b/, '');
+              tmpidx = $(fallbk[0]).attr('id').replace(/am-b/, '');
             }
           }
           if (tmpidx) {
