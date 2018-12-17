@@ -12,25 +12,19 @@
     pastdata, fulldata,
     newdata = artoo.scrape(".rc", {
       url: {
-        sel: 'h3.r a',
+        sel: '.r a',
         attr: 'href'
       },
       name: {
-        sel: 'h3.r a',
+        sel: '.r a h3',
         method: 'text'
       },
       row: {
-        sel: 'h3.r a',
+        sel: '.r a.ab_button',
         method: function($){
-          var tmpidx = +($(this).attr('onmousedown') || '').replace(/^.*,'','(\d+)','.*$/, '$1');
-          if (!tmpidx) {
-            var fallbk = $(this).parent().parent().find('a.ab_button');
-            if (fallbk.length) {
-              tmpidx = $(fallbk[0]).attr('id').replace(/am-b/, '');
-            }
-          }
-          if (tmpidx) {
-            url_index = tmpidx;
+          var el = $(this);
+          if (el.length) {
+            tmpidx = el.attr('id').replace(/am-b/, '');
             return tmpidx;
           }
           return tmpidx++;
