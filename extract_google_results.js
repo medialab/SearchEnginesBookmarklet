@@ -9,6 +9,7 @@
     storage = 'scrap-query',
     storageKey = query + '/' + hlang + '/' + total,
     url_index = 0,
+    tmpidx = 0,
     pastdata, fulldata,
     newdata = artoo.scrape(".rc", {
       url: {
