@@ -5,6 +5,7 @@ Google Bookmarklets are two small icons to drag and drop into your browser bookm
 - a first button allows to switch from a Google search results page to the searc engine's old version which returns 100 results per page;
 - the second button then allows to download in one click these results as CSV, or to store them in the browser's memory and navigate to the next results page in order to download more results at once.
 
+<img src="images/bookmarklets.png"/>
 
 ## Dev
 
