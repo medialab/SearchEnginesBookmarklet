@@ -11,17 +11,17 @@
     url_index = 0,
     tmpidx = 0,
     pastdata, fulldata,
-    newdata = artoo.scrape(".rc", {
+    newdata = artoo.scrape("#rso > .g > .rc", {
       url: {
-        sel: '.r a',
+        sel: '> div > a[ping]',
         attr: 'href'
       },
       name: {
-        sel: '.r a h3',
+        sel: '> div > a[ping] h3',
         method: 'text'
       },
       row: {
-        sel: '.r a.ab_button',
+        sel: '> div.action-menu > a',
         method: function($){
           var el = $(this);
           if (el.length) {
@@ -32,7 +32,7 @@
         }
       },
       description: {
-        sel: 'div.s span.st',
+        sel: '> div:nth-child(2) > div > span',
         method: function($){
           var linkdate = artoo.scrape($(this).find('span.f'), 'text'),
             wholedescr = $(this).text();
@@ -41,9 +41,11 @@
         }
       },
       date: {
-        sel: 'div.s span.st span.f',
+        sel: '> div:nth-child(2) > div > span > span.f',
         method: function($){
-          return $(this).text().replace(/ - $/, '');
+          return $(this).text()
+            .replace(/ [-—] $/, '')
+            .replace(/\s*&nbsp;\s*/, ' ');
         }
       }
     }),
