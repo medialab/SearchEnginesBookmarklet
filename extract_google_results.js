@@ -1,4 +1,6 @@
 (function(){
+artoo.injectScript("//momentjs.com/downloads/moment-with-locales.min.js", function() {
+artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js", function() {
   var loc = window.location,
     href = loc.href,
     query = href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1'),
@@ -10,7 +12,19 @@
     storageKey = query + '/' + hlang + '/' + total,
     url_index = 0,
     tmpidx = 0,
-    pastdata, fulldata,
+    translations = {
+      "minutes": ["minutes", "minuti", "minutos", "minuten", "minuten"],
+      "hours": ["hour", "hours", "heure", "heures", "ora", "ore", "hora", "horas", "stunden", "uur"],
+      "days": ["day", "days", "jour", "jours", "giorno", "giorni", "día", "días", "dia", "dias", "tag", "tagen", "dag", "dagen"]
+    },
+    timeGaps = {};
+  Object.keys(translations).forEach(function(k) {
+    translations[k].forEach(function(t) {
+      timeGaps[t] = k;
+    });
+  });
+  moment.locale(hlang);
+  var pastdata, fulldata,
     newdata = artoo.scrape("#rso > .g > .rc", {
       url: {
         sel: '> div > a[ping]',
@@ -43,9 +57,26 @@
       date: {
         sel: '> div:nth-child(2) > div > span > span.f',
         method: function($){
-          return $(this).text()
+          var dat = $(this).text().toLowerCase()
             .replace(/ [-—] $/, '')
             .replace(/\s*&nbsp;\s*/, ' ');
+          if (dat) {
+            try {
+              dat = moment(dat).toISOString().slice(0, 10);
+            } catch(e) {
+              if (! /\d{4}/.test(dat)) {
+                var parsed = /(^|\s)(\d+)\s(\w+)(\s|$)/.exec(dat);
+                if (parsed) {
+                  var num = parsed[2],
+                    duration = timeGaps[parsed[3]];
+                  if (duration) {
+                    dat = moment().subtract(num, duration).toISOString().slice(0, 10);
+                  }
+                }
+              }
+            }
+          }
+          return dat;
         }
       }
     }),
@@ -122,4 +153,6 @@
   artoo.$("#GBMoverlay .GBMcontinue").on('click', function(){
     window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&hl=' + hlang + "&num=" + total + "&start=" + (start + total);
   });
+});
+});
 })();
