@@ -1,6 +1,11 @@
 (function(){
 artoo.injectScript("//momentjs.com/downloads/moment-with-locales.min.js", function() {
 artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js", function() {
+  // moment.js deprecated parsing any kind of date format, so let's reinforce it, see https://github.com/moment/moment/issues/1407
+  moment.createFromInputFallback = function(config) {
+    // unreliable string magic, or
+    config._d = new Date(config._i);
+  };
   var loc = window.location,
     href = loc.href,
     query = href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1'),
