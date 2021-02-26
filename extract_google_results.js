@@ -30,7 +30,7 @@ artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d76
   });
   moment.locale(hlang);
   var pastdata, fulldata,
-    newdata = artoo.scrape("#rso > .g > .rc", {
+    newdata = artoo.scrape("#rso .g > div", {
       url: {
         sel: '> div > a[ping]',
         attr: 'href'
@@ -40,7 +40,7 @@ artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d76
         method: 'text'
       },
       row: {
-        sel: '> div.action-menu > a',
+        sel: 'div.action-menu > a',
         method: function($){
           var el = $(this);
           if (el.length) {
