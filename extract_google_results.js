@@ -32,11 +32,11 @@ artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d76
   var pastdata, fulldata,
     newdata = artoo.scrape("#rso .g > div", {
       url: {
-        sel: '> div > a[ping]',
+        sel: '> div a[ping]',
         attr: 'href'
       },
       name: {
-        sel: '> div > a[ping] h3',
+        sel: '> div a[ping] h3',
         method: 'text'
       },
       row: {
@@ -51,7 +51,7 @@ artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d76
         }
       },
       description: {
-        sel: '> div:nth-child(2) > div > span',
+        sel: 'div > div:nth-child(2) > span > span',
         method: function($){
           var linkdate = artoo.scrape($(this).find('span.f'), 'text'),
             wholedescr = $(this).text();
@@ -60,7 +60,7 @@ artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d76
         }
       },
       date: {
-        sel: '> div:nth-child(2) > div > span > span.f',
+        sel: 'div > div:nth-child(2) > span > span.f',
         method: function($){
           var dat = $(this).text().toLowerCase()
             .replace(/ [-—] $/, '')
