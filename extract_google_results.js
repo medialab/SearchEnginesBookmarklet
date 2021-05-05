@@ -43,9 +43,9 @@ artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d76
         sel: 'div.action-menu > a',
         method: function($){
           var el = $(this);
-          if (el.length) {
+          if (el.length && el.attr('id')) {
             tmpidx = el.attr('id').replace(/am-b/, '');
-            return tmpidx;
+            return tmpidx++;
           }
           return tmpidx++;
         }
