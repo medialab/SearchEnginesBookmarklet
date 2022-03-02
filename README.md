@@ -21,4 +21,7 @@ rm csr.pem
 
 # Run HTTPS server
 node serve-https.js
+
+# Load the following page in your browser to accept the unsafe certificate first
+https://localhost:4443/
 ```

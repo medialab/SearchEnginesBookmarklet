@@ -30,7 +30,7 @@ artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d76
   });
   moment.locale(hlang);
   var pastdata, fulldata,
-    newdata = artoo.scrape("#rso .g > div[data-hveid], #rso .g > g-section-with-header > div > div", {
+    newdata = artoo.scrape("#rso .g > div[data-hveid], #rso .g[data-hveid], #rso .g > g-section-with-header > div > div", {
       url: {
         sel: 'div a[ping], div a[data-ved]',
         attr: 'href'
