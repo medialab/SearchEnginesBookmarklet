@@ -17,8 +17,7 @@ img {
 
 <p>Drag &amp; drop images below into your bookmark bar:</p>
 
-<a id="bookmark1" href=""><img src="images/old-google.png" alt="SwitchToClassicGoogle"/></a>
-<a id="bookmark2" href=""><img src="images/new-google.png" alt="ExtractGoogleResultsPage"/></a>
+<a id="bookmark" href=""><img src="images/new-google.png" alt="GoogleBookmarklet"/></a>
 
 </body>
 <script>
@@ -34,8 +33,7 @@ document.addEventListener("DOMContentLoaded", function(){
               "})()";
     document.getElementById(hrefId).href = res.replace(/\s+/g, '%20');
   };
-  buildBookmarklet("bookmark1", "SwitchToClassicGoogle");
-  buildBookmarklet("bookmark2", "ExtractClassicGoogleResults");
+  buildBookmarklet("bookmark", "GoogleBookmarklet");
 });
 </script>
 </html>
