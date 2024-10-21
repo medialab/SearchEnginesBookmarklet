@@ -38,6 +38,9 @@
     }
   }
   else if(~href.search(/:\/\/([^.]+\.)?duckduckgo\.[^/]+\//)){
+    const query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
+    if (!query)
+      return window.alert("Please search for a keyword first.");
     if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(d), artoo.exec(), e = !1)), e){
       var bod = document.getElementsByTagName("body")[0];
       bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));

@@ -90,7 +90,6 @@
             console.log(results)
             return results;
         }
-
         createPopup();
     });
 })();
