@@ -1,5 +1,5 @@
 <html>
-<title>Google Bookmarklets</title>
+<title>Search Engine Bookmarklets</title>
 <style>
 body {
   font-family: Sans-serif;
@@ -13,11 +13,12 @@ img {
 }
 </style>
 <body>
-<h1>Install Google Bookmarklets</h1>
+<h1>Install Search Engine Bookmarklets</h1>
 
-<p>Drag &amp; drop images below into your bookmark bar:</p>
+<p>This bookmarklet can be used on google and duckduckgo domains.</p>
+<p>Drag &amp; drop the image below into your bookmark bar:</p>
 
-<a id="bookmark" href=""><img src="images/new-google.png" alt="GoogleBookmarklet"/></a>
+<a id="bookmark" href=""><img src="images/new-google.png" alt="SearchEngineBookmarklet"/></a>
 
 </body>
 <script>
@@ -33,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function(){
               "})()";
     document.getElementById(hrefId).href = res.replace(/\s+/g, '%20');
   };
-  buildBookmarklet("bookmark", "GoogleBookmarklet");
+  buildBookmarklet("bookmark", "SearchEngineBookmarklet");
 });
 </script>
 </html>
