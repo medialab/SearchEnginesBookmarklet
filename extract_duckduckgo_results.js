@@ -1,53 +1,5 @@
 (async function () {
     artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js", function() {
-        function createPopup() {
-            const popup = document.createElement("div");
-            popup.style.position = "fixed";
-            popup.style.top = "50%";
-            popup.style.right = "0%";
-            popup.style.transform = "translate(-50%, -50%)";
-            popup.style.backgroundColor = "white";
-            popup.style.border = "1px solid black";
-            popup.style.padding = "20px";
-            popup.style.zIndex = "10000";
-            popup.style.display = "flex";
-            popup.style.flexDirection = "column";
-            popup.style.alignItems = "center";
-            popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
-
-            const title = document.createElement("h2");
-            title.textContent = "DuckDuckGo bookmarklet";
-            title.style.margin = "0";
-
-            popup.appendChild(title);
-
-            const select = document.createElement("select");
-            const options = [10, 20, 50, 100, 1000];
-            options.forEach(optionValue => {
-                const option = document.createElement("option");
-                option.value = optionValue;
-                option.textContent = optionValue;
-                select.appendChild(option);
-            });
-            select.style.padding = "10px";
-            select.style.margin = "10px";
-            popup.appendChild(select);
-
-            const button = document.createElement("button");
-            button.textContent = "Lancer le scraping";
-            
-            button.onclick = async function () {
-                const n = parseInt(select.value, 10);
-                const data = await scrape(n);
-                artoo.saveCsv(data);
-                document.body.removeChild(popup);
-            };
-            button.style.padding = "10px";
-            button.style.margin = "10px";
-            popup.appendChild(button);
-            document.body.appendChild(popup);
-        }
-
         async function moreResult(){
             const button = document.getElementById('more-results');
             if (button) {
@@ -87,9 +39,34 @@
                     description: description
                 });
             }
-            console.log(results)
             return results;
         }
-        createPopup();
+
+        var styles = [
+            '#DBMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 250px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
+            '#DBMoverlay h2 {margin: 0px 0px 15px 0px; text-decoration: underline;}',
+            '#DBMoverlay input[type="button"] {margin: 3px;}'
+          ];
+        
+        artoo.$('body').append('<style>' + styles.join('\n') + '</style>' +
+        '<div id="DBMoverlay">' +
+        '<h2>Extract DuckDuckGo Results</h2>' +
+        '<select id="DBM_number">' +
+        '<option value="10">10</option>' +
+        '<option value="20">20</option>' +
+        '<option value="50">50</option>' +
+        '<option value="100">100</option>' +
+        '<option value="1000">1000</option>' +
+        '</select>' +
+        '<input class="DBMdownload" type="button" value="Begin scraping"></input><br/>' +
+        '</div>');
+
+        artoo.$("#DBMoverlay .DBMdownload").on('click', async function(){
+            select = document.querySelector('select[id="DBM_number"]')
+            const n = parseInt(select.value, 10);
+            const data = await scrape(n);
+            artoo.saveCsv(data);
+        });
+
     });
 })();
