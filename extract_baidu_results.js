@@ -2,12 +2,12 @@
     artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js", async function() {
         async function scrape() {
             let results = [];
-            var scrap = document.querySelectorAll('div[class="c-container"]');
+            var scrap = document.querySelectorAll('div[class="result c-container xpath-log new-pmd"]');
             for (let i = 0; i < scrap.length; i++) {
                 let ele = scrap[i];
-                let titleElement = ele.querySelector('div>h3>a');
+                let titleElement = ele.querySelector('div>div>h3>a');
                 let title = titleElement ? titleElement.textContent : null;
-                let link = titleElement ? titleElement.href : null;
+                let link = ele.getAttribute('mu');
                 let descriptionElement = ele.querySelector('span[class*="content"');
                 let description = descriptionElement ? descriptionElement.textContent : null;
                 results.push({
