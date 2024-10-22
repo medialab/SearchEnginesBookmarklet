@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function(){
                 "var bod = document.getElementsByTagName('body')[0];" +
                 "bod || (bod = document.createElement('body'), document.documentElement.appendChild(bod));" +
                 "bod.appendChild(script);" +
+                "script.onerror = function() {window.alert('CSP blocking detected! Unable to load scripts.');}" +
               "})()";
     document.getElementById(hrefId).href = res.replace(/\s+/g, '%20');
   };
