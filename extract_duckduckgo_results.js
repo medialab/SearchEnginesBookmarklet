@@ -53,19 +53,14 @@
         artoo.$('body').append('<style>' + styles.join('\n') + '</style>' +
         '<div id="DBMoverlay">' +
         '<h2>Extract DuckDuckGo Results</h2>' +
-        '<select id="DBM_number">' +
-        '<option value="10">10</option>' +
-        '<option value="20">20</option>' +
-        '<option value="50">50</option>' +
-        '<option value="100">100</option>' +
-        '<option value="1000">1000</option>' +
-        '</select>' +
+        '<p>Number of results :</p>' +
+        '<input type="number" id="DBM_number"></br></br>' +
         '<input class="DBMdownload" type="button" value="Begin scraping"></input><br/>' +
         '</div>');
 
         artoo.$("#DBMoverlay .DBMdownload").on('click', async function(){
-            select = document.querySelector('select[id="DBM_number"]')
-            const n = parseInt(select.value, 10);
+            input = document.querySelector('input[id="DBM_number"]')
+            const n = parseInt(input.value, 10);
             const data = await scrape(n);
             saveAs(new Blob([artoo.writers.csv(data)], {type: "text/plain;charset=utf-8"}), "duckduckgo-results-" + query + "-first" + n + ".csv");
         });
