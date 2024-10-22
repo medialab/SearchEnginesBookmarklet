@@ -19,10 +19,14 @@
             let results = [];
             var scrap = document.querySelectorAll('li[data-layout="organic"] article');
             let more = 1;
+
+            updateProgress(scrap.length, n);
+
             while(scrap.length < n && more == 1){
                 more = await moreResult();
                 await wait(1000, 2000);
                 var scrap = document.querySelectorAll('li[data-layout="organic"] article');
+                updateProgress(scrap.length, n);
             }
             scrap = Array.from(scrap).slice(0, n);
             for (let i = 0; i < scrap.length && results.length < n; i++) {
@@ -38,15 +42,27 @@
                     link: link,
                     description: description
                 });
+                updateProgress(results.length, n);
             }
             return results;
         }
 
+        function updateProgress(current, total) {
+            const progressBar = document.querySelector('#DBMprogressBar');
+            const progressText = document.querySelector('#DBMprogressText');
+            let percentage = Math.min((current / total) * 100, 100);
+            progressBar.style.width = percentage + '%';
+            progressText.textContent = `Collected ${current} of ${total} results`;
+        }
+
         var styles = [
-            '#DBMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 250px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
+            '#DBMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 300px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
             '#DBMoverlay h2 {margin: 0px 0px 15px 0px; text-decoration: underline;}',
-            '#DBMoverlay input[type="button"] {margin: 3px;}'
-          ], 
+            '#DBMoverlay input[type="button"] {margin: 3px;}',
+            '#DBMprogressContainer {background-color: #f3f3f3; border-radius: 5px; width: 100%; height: 20px; margin-top: 10px;}',
+            '#DBMprogressBar {height: 100%; width: 0; background-color: #4caf50; border-radius: 5px;}',
+            '#DBMprogressText {margin-top: 5px;}'
+        ], 
           href = window.location.href,
           query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
         
@@ -56,6 +72,8 @@
         '<p>Number of results :</p>' +
         '<input type="number" id="DBM_number"></br></br>' +
         '<input class="DBMdownload" type="button" value="Begin scraping"></input><br/>' +
+        '<div id="DBMprogressContainer"><div id="DBMprogressBar"></div></div>' +
+        '<p id="DBMprogressText">Collected 0 of 0 results</p>' +
         '</div>');
 
         artoo.$("#DBMoverlay .DBMdownload").on('click', async function(){
