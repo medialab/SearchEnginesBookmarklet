@@ -46,7 +46,9 @@
             '#DBMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 250px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
             '#DBMoverlay h2 {margin: 0px 0px 15px 0px; text-decoration: underline;}',
             '#DBMoverlay input[type="button"] {margin: 3px;}'
-          ];
+          ], 
+          href = window.location.href,
+          query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
         
         artoo.$('body').append('<style>' + styles.join('\n') + '</style>' +
         '<div id="DBMoverlay">' +
@@ -65,7 +67,7 @@
             select = document.querySelector('select[id="DBM_number"]')
             const n = parseInt(select.value, 10);
             const data = await scrape(n);
-            artoo.saveCsv(data);
+            saveAs(new Blob([artoo.writers.csv(data)], {type: "text/plain;charset=utf-8"}), "duckduckgo-results-" + query + "-first" + n + ".csv");
         });
 
     });
