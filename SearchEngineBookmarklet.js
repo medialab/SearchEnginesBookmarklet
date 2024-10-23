@@ -14,6 +14,9 @@
   }, m = {
     // scriptUrl: "//localhost:4443/switch_more_baidu.js" // for debug using `node serve-https.js`
     scriptUrl: "//medialab.github.io/google-bookmarklets/switch_more_baidu.js"
+  }, q = {
+    // scriptUrl: "//localhost:4443/extract_qwant_results.js" // for debug using `node serve-https.js`
+    scriptUrl: "//medialab.github.io/google-bookmarklets/extract_qwant_results.js"
   }, injectScript = function(body, url, name, settings){
     var a = document.createElement("script");
     console.log("Loading "+name+".js...");
@@ -72,6 +75,16 @@
       }
     }
   }
+  else if(~href.search(/:\/\/([^.]+\.)?qwant\.[^/]+\//)){
+    const query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
+    if (!query)
+      return window.alert("Please search for a keyword first.");
+    if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(q), artoo.exec(), e = !1)), e){
+      var bod = document.getElementsByTagName("body")[0];
+      bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
+      injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", q);
+    }
+  }
   else
-    return window.alert("You can only use this bookmarklet on Google and DuckDuckGo websites.");
+    return window.alert("You can only use this bookmarklet on Google, DuckDuckGo, Qwant and Baidu websites.");
 }).call(this);
