@@ -32,24 +32,20 @@
     if (settings) a.setAttribute("settings", JSON.stringify(settings));
     body.appendChild(a);
   }, e = !0,
-    href = window.location.href,
-    query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
+    href = window.location.href;
   if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
-    var query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
+    const query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
     if(!query)
       return window.alert("Please search for a keyword first.");
-    if (href.includes("num=") && href.includes("start=")){
-      if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(s), artoo.exec(), e = !1)), e){
-        var bod = document.getElementsByTagName("body")[0];
-        bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
-        injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", s);
-      }
-    } else {
-      if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(t), artoo.exec(), e = !1)), e){
-        var bod = document.getElementsByTagName("body")[0];
-        bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
-        injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", t);
-      }
+    if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(s), artoo.exec(), e = !1)), e){
+      var bod = document.getElementsByTagName("body")[0];
+      bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
+      injectScript(
+        bod,
+        "//medialab.github.io/artoo/public/dist/artoo-latest.min.js",
+        "artoo", 
+        href.includes("num=") && href.includes("start=") ? s : t
+      );
     }
   }
   else if(~href.search(/:\/\/([^.]+\.)?duckduckgo\.[^/]+\//)){
@@ -66,19 +62,15 @@
     const query = (~href.search(/[#?&]wd=/) ? href.replace(/^.*[#?&]wd=([^#?&]+).*$/, '$1') : undefined);
     if(!query)
       return window.alert("Please search for a keyword first."); 
-    if (href.includes("rn=") && href.includes("pn=")){
-      if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(b), artoo.exec(), e = !1)), e){
-        var bod = document.getElementsByTagName("body")[0];
-        bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
-        injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", b);
-      }
-    }
-    else{
-      if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(m), artoo.exec(), e = !1)), e){
-        var bod = document.getElementsByTagName("body")[0];
-        bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
-        injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", m);
-      }
+    if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(b), artoo.exec(), e = !1)), e){
+      var bod = document.getElementsByTagName("body")[0];
+      bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
+      injectScript(
+        bod,
+        "//medialab.github.io/artoo/public/dist/artoo-latest.min.js",
+        "artoo",
+        href.includes("rn=") && href.includes("pn=") ? b : m
+      );
     }
   }
   else if(~href.search(/:\/\/([^.]+\.)?qwant\.[^/]+\//)){
@@ -96,19 +88,15 @@
     const query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
     if(!query)
       return window.alert("Please search for a keyword first."); 
-    if (href.includes("q=") && href.includes("first=")){
-      if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(n), artoo.exec(), e = !1)), e){
-        var bod = document.getElementsByTagName("body")[0];
-        bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
-        injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", n);
-      }
-    }
-    else{
-      if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(o), artoo.exec(), e = !1)), e){
-        var bod = document.getElementsByTagName("body")[0];
-        bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
-        injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", o);
-      }
+    if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(n), artoo.exec(), e = !1)), e){
+      var bod = document.getElementsByTagName("body")[0];
+      bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
+      injectScript(
+        bod,
+        "//medialab.github.io/artoo/public/dist/artoo-latest.min.js",
+        "artoo",
+        href.includes("q=") && href.includes("first=") ? n : o
+      );
     }
   }
   else
