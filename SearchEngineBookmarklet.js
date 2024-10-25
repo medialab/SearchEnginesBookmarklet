@@ -1,28 +1,22 @@
 (function(){
-  var t = {
-    scriptUrl: "//localhost:4443/switch_classic_google.js" // for debug using `node serve-https.js`
-    // scriptUrl: "//medialab.github.io/google-bookmarklets/switch_classic_google.js"
+  const scriptsDomain = "//medialab.github.io/google-bookmarklets/";
+  // const scriptsDomain = "//localhost:4443/"; // for debug using `node serve-https.js`
+  const t = {
+    scriptUrl: scriptsDomain + "switch_classic_google.js"
   }, s = {
-    scriptUrl: "//localhost:4443/extract_google_results.js" // for debug using `node serve-https.js`
-    // scriptUrl: "//medialab.github.io/google-bookmarklets/extract_google_results.js"
+    scriptUrl: scriptsDomain + "extract_google_results.js"
   }, d = {
-    scriptUrl: "//localhost:4443/extract_duckduckgo_results.js" // for debug using `node serve-https.js`
-    // scriptUrl: "//medialab.github.io/google-bookmarklets/extract_duckduckgo_results.js"
+    scriptUrl: scriptsDomain + "extract_duckduckgo_results.js"
   }, b = {
-    scriptUrl: "//localhost:4443/extract_baidu_results.js" // for debug using `node serve-https.js`
-    // scriptUrl: "//medialab.github.io/google-bookmarklets/extract_baidu_results.js"
+    scriptUrl: scriptsDomain + "extract_baidu_results.js"
   }, m = {
-    scriptUrl: "//localhost:4443/switch_more_baidu.js" // for debug using `node serve-https.js`
-    // scriptUrl: "//medialab.github.io/google-bookmarklets/switch_more_baidu.js"
+    scriptUrl: scriptsDomain + "switch_more_baidu.js"
   }, q = {
-    scriptUrl: "//localhost:4443/extract_qwant_results.js" // for debug using `node serve-https.js`
-    // scriptUrl: "//medialab.github.io/google-bookmarklets/extract_qwant_results.js"
+    scriptUrl: scriptsDomain + "extract_qwant_results.js"
   }, o = {
-    scriptUrl: "//localhost:4443/switch_more_bing.js" // for debug using `node serve-https.js`
-    // scriptUrl: "//medialab.github.io/google-bookmarklets/switch_more_bing.js"
+    scriptUrl: scriptsDomain + "switch_more_bing.js"
   }, n = {
-    scriptUrl: "//localhost:4443/extract_bing_results.js" // for debug using `node serve-https.js`
-    // scriptUrl: "//medialab.github.io/google-bookmarklets/extract_bing_results.js"
+    scriptUrl: scriptsDomain + "extract_bing_results.js"
   }, injectScript = function(body, url, name, settings){
     var a = document.createElement("script");
     console.log("Loading "+name+".js...");
@@ -43,7 +37,7 @@
       injectScript(
         bod,
         "//medialab.github.io/artoo/public/dist/artoo-latest.min.js",
-        "artoo", 
+        "artoo",
         href.includes("num=") && href.includes("start=") ? s : t
       );
     }
