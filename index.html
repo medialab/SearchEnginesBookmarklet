@@ -29,14 +29,11 @@ document.addEventListener("DOMContentLoaded", function(){
                 "script.type = 'text/javascript';" +
                 "script.src = '" + window.location.href.replace(/^https?:/, '').replace(/\/?(index.html)?$/, '/') + scriptName + ".js';" +
                 "var bod = document.getElementsByTagName('body')[0];" +
-                "var href = window.location.href, bingOverride;" +
+                "var href = window.location.href;" +
                 "if(~href.search(/:\\/\\/([^.]+\\.)?bing\\.[^/]+\\//)){" +
-                "bingOverride = HTMLBodyElement.prototype.appendChild;" +
                 "HTMLBodyElement.prototype.appendChild = Node.prototype.appendChild;}" +
                 "bod || (bod = document.createElement('body'), document.documentElement.appendChild(bod));" +
                 "bod.appendChild(script);" +
-                "if(~href.search(/:\\/\\/([^.]+\\.)?bing\.[^/]+\\//)){" +
-                "HTMLBodyElement.prototype.appendChild = bingOverride;}" +
                 "script.onerror = function() {window.alert('CSP blocking detected! Unable to load scripts.');}" +
               "})()";
     document.getElementById(hrefId).href = res.replace(/\s+/g, '%20');
