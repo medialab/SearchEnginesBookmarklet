@@ -2,14 +2,14 @@
     artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js", async function() {
         async function scrape() {
             let results = [];
-            var scrap = document.querySelectorAll('div[class="result c-container xpath-log new-pmd"]');
+            var scrap = document.querySelectorAll('li[class="b_algo"]');
             for (let i = 0; i < scrap.length; i++) {
                 let ele = scrap[i];
-                let titleElement = ele.querySelector('div>div>h3>a');
-                let title = titleElement ? titleElement.textContent : null;
-                let link = ele.getAttribute('mu');
-                let descriptionElement = ele.querySelector('span[class*="content"]');
-                let description = descriptionElement ? descriptionElement.textContent : null;
+                let linkElement = ele.querySelector('div[class="b_attribution"]');
+                let link = linkElement ? linkElement.textContent : null;
+                let title = ele.querySelector('h2 a[target="_blank"]').textContent;
+                let descriptionElement = ele.querySelector('div[class="b_caption"]');
+                let description = descriptionElement ? descriptionElement.textContent : ele.querySelector('div:nth-child(2) p').textContent;
                 results.push({
                     title: title,
                     link: link,
@@ -26,9 +26,9 @@
           loc = window.location,
           pastdata, fulldata, newdata = await scrape(),
           href = loc.href,
-          total = (~href.search(/rn=/) ? parseInt(href.replace(/^.*[#?&]rn=(\d+).*$/, '$1')) : 50),
-          start = (~href.search(/pn=/) ? parseInt(href.replace(/^.*[#?&]pn=(\d+).*$/, '$1')) : 0),
-          query = (~href.search(/[#?&]wd=/) ? href.replace(/^.*[#?&]wd=([^#?&]+).*$/, '$1') : undefined),
+          total = (~href.search(/count=/) ? parseInt(href.replace(/^.*[#?&]count=(\d+).*$/, '$1')) : 30),
+          start = (~href.search(/first=/) ? parseInt(href.replace(/^.*[#?&]first=(\d+).*$/, '$1')) : 0),
+          query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
           storage = 'scrap-query',
           storageKey = query + '/' + total,
           page = start/total,
@@ -52,7 +52,7 @@
 
         artoo.$('body').append('<style>' + styles.join('\n') + '</style>' +
         '<div id="BBMoverlay">' +
-        '<h2>Extract Baidu Results</h2>' +
+        '<h2>Extract Bing Results</h2>' +
         '<p>Search for "<b>' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>"<br/>' +
         'page ' + page + ' (with up to ' + total + ' urls per page)</p>' +
         '<p class="BBMpageresults"></p>' +
@@ -92,13 +92,13 @@
             refresh();
           });
           artoo.$("#BBMoverlay .BBMdownload").on('click', function(){
-            saveAs(new Blob([artoo.writers.csv(newdata)], {type: "text/plain;charset=utf-8"}), "baidu-results-" + query + "-page" + page + ".csv");
+            saveAs(new Blob([artoo.writers.csv(newdata)], {type: "text/plain;charset=utf-8"}), "bing-results-" + query + "-page" + page + ".csv");
           });
           artoo.$("#BBMoverlay .BBMdownloadAll").on('click', function(){
-            saveAs(new Blob([artoo.writers.csv(fulldata)], {type: "text/plain;charset=utf-8"}), "baidu-results-" + query + "-pages" + artoo.store(storage + '-pages').sort().join('-') + ".csv");
+            saveAs(new Blob([artoo.writers.csv(fulldata)], {type: "text/plain;charset=utf-8"}), "bing-results-" + query + "-pages" + artoo.store(storage + '-pages').sort().join('-') + ".csv");
           });
           artoo.$("#BBMoverlay .BBMcontinue").on('click', function(){
-            window.location.href = loc.protocol + "//" + loc.hostname + "/s?wd=" + query + '&pn=' + (start + total) + '&rn=' + total;
+            window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&first=' + (start + total) + '&count=' + total + '&FORM=PERE';
           });
     });
 })();
