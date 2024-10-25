@@ -8,8 +8,8 @@
                 let linkElement = ele.querySelector('div[class="b_attribution"]');
                 let link = linkElement ? linkElement.textContent : null;
                 let title = ele.querySelector('h2 a[target="_blank"]').textContent;
-                let descriptionElement = ele.querySelector('div[class="b_caption"]');
-                let description = descriptionElement ? descriptionElement.textContent : ele.querySelector('div:nth-child(2) p').textContent;
+                let descriptionElement = ele.querySelector('div p');
+                let description = descriptionElement ? descriptionElement.textContent : null;
                 results.push({
                     title: title,
                     link: link,
