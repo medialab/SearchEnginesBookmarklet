@@ -17,6 +17,9 @@
   }, q = {
     // scriptUrl: "//localhost:4443/extract_qwant_results.js" // for debug using `node serve-https.js`
     scriptUrl: "//medialab.github.io/google-bookmarklets/extract_qwant_results.js"
+  }, o = {
+    // scriptUrl: "//localhost:4443/switch_more_bing.js" // for debug using `node serve-https.js`
+    scriptUrl: "//medialab.github.io/google-bookmarklets/switch_more_bing.js"
   }, injectScript = function(body, url, name, settings){
     var a = document.createElement("script");
     console.log("Loading "+name+".js...");
@@ -84,6 +87,19 @@
       bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
       injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", q);
     }
+  }
+  else if(~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//)){
+    var bingOverride = HTMLBodyElement.prototype.appendChild;
+    HTMLBodyElement.prototype.appendChild = Node.prototype.appendChild;
+    const query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
+    if(!query)
+      return window.alert("Please search for a keyword first."); 
+      if ("object" == typeof this.artoo && (artoo.settings.reload || (artoo.loadSettings(o), artoo.exec(), e = !1)), e){
+        var bod = document.getElementsByTagName("body")[0];
+        bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
+        injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", o);
+      }
+    HTMLBodyElement.prototype.appendChild = bingOverride;
   }
   else
     return window.alert("You can only use this bookmarklet on Google, DuckDuckGo, Qwant and Baidu websites.");
