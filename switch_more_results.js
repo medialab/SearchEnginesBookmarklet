@@ -20,12 +20,19 @@
         '<div id="BMoverlay">' +
         '<h2>Redirect to More Results</h2>' +
         '<p>How many results per page?' +
-        '<select class="BMresults"></select></p>' +
+        '<select class="BMresults"></select></p>');
+    if (~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)) {
+        artoo.$('#BMoverlay').append(
+            '<p>Which language?' +
+            '<select class="BMlang"></select></p>');
+    };
+    artoo.$('#BMoverlay').append(
         '<p>You will be redirected to the following url:</p>' +
         '<textarea class="BMurl" disabled="disabled" rows="3" />' +
         '<br/>' +
         '<input class="BMredirect" type="button" value="Redirect me!"></input>' +
-        '</div>');
+        '</div>'
+    );
     if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
         var query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
         hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.substr(0,2) : 'fr')),
