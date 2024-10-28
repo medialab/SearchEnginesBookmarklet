@@ -1,7 +1,7 @@
 (async function () {
     artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js", function() {
         async function moreResult(){
-            const button = document.querySelector('[data-testid="buttonShowMore"]');;
+            const button = document.querySelector('[data-testid="buttonShowMore"]');
             if (button) {
                 button.click();
                 return 1;
