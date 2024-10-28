@@ -1,22 +1,18 @@
 (function(){
   const scriptsDomain = "//medialab.github.io/google-bookmarklets/";
   // const scriptsDomain = "//localhost:4443/"; // for debug using `node serve-https.js`
-  const t = {
-    scriptUrl: scriptsDomain + "switch_classic_google.js"
-  }, s = {
+  const s = {
     scriptUrl: scriptsDomain + "extract_google_results.js"
   }, d = {
     scriptUrl: scriptsDomain + "extract_duckduckgo_results.js"
   }, b = {
     scriptUrl: scriptsDomain + "extract_baidu_results.js"
-  }, m = {
-    scriptUrl: scriptsDomain + "switch_more_baidu.js"
   }, q = {
     scriptUrl: scriptsDomain + "extract_qwant_results.js"
-  }, o = {
-    scriptUrl: scriptsDomain + "switch_more_bing.js"
   }, n = {
     scriptUrl: scriptsDomain + "extract_bing_results.js"
+  }, more = {
+    scriptUrl: scriptsDomain + "switch_more_results.js"
   }, injectScript = function(body, url, name, settings){
     var a = document.createElement("script");
     console.log("Loading "+name+".js...");
@@ -38,7 +34,7 @@
         bod,
         "//medialab.github.io/artoo/public/dist/artoo-latest.min.js",
         "artoo",
-        href.includes("num=") && href.includes("start=") ? s : t
+        href.includes("num=") && href.includes("start=") ? s : more
       );
     }
   }
@@ -63,7 +59,7 @@
         bod,
         "//medialab.github.io/artoo/public/dist/artoo-latest.min.js",
         "artoo",
-        href.includes("rn=") && href.includes("pn=") ? b : m
+        href.includes("rn=") && href.includes("pn=") ? b : more
       );
     }
   }
@@ -89,7 +85,7 @@
         bod,
         "//medialab.github.io/artoo/public/dist/artoo-latest.min.js",
         "artoo",
-        href.includes("q=") && href.includes("first=") ? n : o
+        href.includes("q=") && href.includes("first=") ? n : more
       );
     }
   }
