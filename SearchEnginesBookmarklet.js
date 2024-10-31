@@ -17,6 +17,8 @@
     body.appendChild(a);
   }, href = window.location.href;
   var e = !0;
+
+  // Google
   if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
     const query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
     if(!query)
@@ -32,6 +34,8 @@
       );
     }
   }
+
+  // DuckDuckGo
   else if(~href.search(/:\/\/([^.]+\.)?duckduckgo\.[^/]+\//)){
     const query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
     if (!query)
@@ -42,6 +46,8 @@
       injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", autoscroll);
     }
   }
+
+  // Baidu
   else if(~href.search(/:\/\/([^.]+\.)?baidu\.[^/]+\//)){
     const query = (~href.search(/[#?&]wd=/) ? href.replace(/^.*[#?&]wd=([^#?&]+).*$/, '$1') : undefined);
     if(!query)
@@ -57,6 +63,8 @@
       );
     }
   }
+
+  // Qwant
   else if(~href.search(/:\/\/([^.]+\.)?qwant\.[^/]+\//)){
     const query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
     if (!query)
@@ -67,6 +75,8 @@
       injectScript(bod, "//medialab.github.io/artoo/public/dist/artoo-latest.min.js", "artoo", autoscroll);
     }
   }
+
+  // Bing
   else if(~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//)){
     HTMLBodyElement.prototype.appendChild = Node.prototype.appendChild;
     const query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
@@ -83,6 +93,6 @@
       );
     }
   }
-  else
-    return window.alert("You can only use this bookmarklet on Google, DuckDuckGo, Qwant, Bing and Baidu websites.");
+
+  else return window.alert("You can only use this bookmarklet on Google, DuckDuckGo, Qwant, Bing and Baidu websites.");
 }).call(this);

@@ -1,6 +1,7 @@
 <html>
-<title>Search Engine Bookmarklets</title>
-<style>
+  <head>
+    <title>Search Engines Bookmarklet</title>
+    <style>
 body {
   font-family: Sans-serif;
   margin: auto;
@@ -11,19 +12,17 @@ img {
   height: 48px;
   margin: 12px;
 }
-</style>
-<body>
-<h1>Install Search Engine Bookmarklets</h1>
-
-<p>This bookmarklet can be used on google and duckduckgo domains.</p>
-<p>Drag &amp; drop the image below into your bookmark bar:</p>
-
-<a id="bookmark" href=""><img src="images/new-google.png" alt="SearchEngineBookmarklet"/></a>
-
-</body>
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-  var buildBookmarklet = function(hrefId, scriptName){
+    </style>
+  </head>
+  <body>
+    <h1>Install Search Engines Bookmarklet</h1>
+    <p>This bookmarklet (built for Firefox &amp; Chrome only) can be used to easily extract search results from Google, DuckDuckGo, Baidu, Qwant and Bing.</p>
+    <p>Drag &amp; drop the image below into your bookmarks bar (you may first need to enable its display from your browser's menu):</p>
+    <a id="bookmark" href=""><img src="images/new-google.png" alt="SearchEngineBookmarklet"/></a>
+  </body>
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  var buildBookmarklet = function(hrefId, scriptName) {
     var res = "javascript:(function(){" +
                 "var script = document.createElement('script');" +
                 "script.type = 'text/javascript';" +
@@ -38,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function(){
               "})()";
     document.getElementById(hrefId).href = res.replace(/\s+/g, '%20');
   };
-  buildBookmarklet("bookmark", "SearchEngineBookmarklet");
+  buildBookmarklet("bookmark", "SearchEnginesBookmarklet");
 });
-</script>
+  </script>
 </html>
