@@ -6,6 +6,46 @@
       config._d = new Date(config._i);
     };
 
+    function relative_date_converter(date){
+      if (date) {
+        try {
+          if (/^\d{4}年\d{1,2}月\d{1,2}日$/.test(date)) {
+            date = moment(date, "YYYY年MM月DD日").format("YYYY-MM-DD");
+        } else {
+            date = moment(date).toISOString().slice(0, 10);
+        }
+        } catch (e) {
+            if (!/\d{4}/.test(date)) {
+                var parsed;
+                
+                if (/(\d+)天前/.test(date)) {
+                    parsed = /(\d+)\s*天前/.exec(date);
+                    date = moment().subtract(parsed[1], 'days').toISOString().slice(0, 10);
+    
+                } else if (/(\d+)小时前/.test(date)) {
+                    parsed = /(\d+)\s*小时前/.exec(date);
+                    date = moment().subtract(parsed[1], 'hours').toISOString().slice(0, 10);
+    
+                } else if (/昨天(\d+:\d+)/.test(date)) {
+                    parsed = /昨天(\d+:\d+)/.exec(date);
+                    date = moment().subtract(1, 'days').format("YYYY-MM-DD") + ' ' + parsed[1];
+    
+                } else {
+                    parsed = /(^|\s)(\d+)\s(\w+)(\s|$)/.exec(date);
+                    if (parsed) {
+                        var num = parsed[2],
+                            duration = timeGaps[parsed[3]];
+                        if (duration) {
+                            date = moment().subtract(num, duration).toISOString().slice(0, 10);
+                        }
+                    }
+                }
+            }
+        }
+      }
+      return date;
+    }
+
     function scrape(href) {
       let results = [];
       var scrap, link, title, desc, date;
@@ -18,7 +58,8 @@
             title = ele.querySelector('h2 a[target="_blank"]').textContent;
             let descriptionElement = ele.querySelector('div p');
             desc = descriptionElement ? descriptionElement.textContent : null;
-            date = ele.querySelector('span[class="news_dt"]');
+            let try_date = ele.querySelector('span[class="news_dt"]');
+            date = try_date ? try_date : "";
             if (date){date = date.textContent}
           } else if(~href.search(/:\/\/([^.]+\.)?baidu\.[^/]+\//)){
             let ele = scrap[i];
@@ -34,6 +75,7 @@
               date = "";
             }
           }
+          date = relative_date_converter(date.trim());
           results.push({
               title: title,
               link: link,
@@ -48,8 +90,8 @@
       href = loc.href,
       translations = {
         "minutes": ["minutes", "minuti", "minutos", "minuten", "minuten"],
-        "hours": ["hour", "hours", "heure", "heures", "ora", "ore", "hora", "horas", "stunden", "uur"],
-        "days": ["day", "days", "jour", "jours", "giorno", "giorni", "día", "días", "dia", "dias", "tag", "tagen", "dag", "dagen"]
+        "hours": ["hour", "hours", "heure", "heures", "ora", "ore", "hora", "horas", "stunden", "uur", "小时前"],
+        "days": ["day", "days", "jour", "jours", "giorno", "giorni", "día", "días", "dia", "dias", "tag", "tagen", "dag", "dagen", "天前"]
       },
       timeGaps = {},
       query, hlang, total, start;
@@ -117,30 +159,13 @@
               var dat = $(this).text().toLowerCase()
                 .replace(/ [-—] $/, '')
                 .replace(/\s*&nbsp;\s*/, ' ');
-              if (dat) {
-                try {
-                  dat = moment(dat).toISOString().slice(0, 10);
-                } catch(e) {
-                  if (! /\d{4}/.test(dat)) {
-                    var parsed = /(^|\s)(\d+)\s(\w+)(\s|$)/.exec(dat);
-                    if (parsed) {
-                      var num = parsed[2],
-                        duration = timeGaps[parsed[3]];
-                      if (duration) {
-                        dat = moment().subtract(num, duration).toISOString().slice(0, 10);
-                      }
-                    }
-                  }
-                }
-              }
-              return dat;
+              return relative_date_converter(dat);
             }
           }
         })
       } else{
         newdata = scrape(href)
       }
-      console.log(newdata)
 
     artoo.store.concatTo = function(key, arr) {
       artoo.store.set(key, artoo.store(key).concat(arr));
