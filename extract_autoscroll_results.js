@@ -1,6 +1,54 @@
 (async function () {
+    artoo.injectScript("//medialab.github.io/google-bookmarklets/moment-with-locales.min.js", function() {
     artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js", function() {
+        async function relative_date_converter(date){
+            if (date) {
+              try {
+                if (/^\d{4}年\d{1,2}月\d{1,2}日$/.test(date)) {
+                  date = moment(date, "YYYY年MM月DD日").format("YYYY-MM-DD");
+              } else {
+                  date = moment(date).toISOString().slice(0, 10);
+              }
+              } catch (e) {
+                  if (!/\d{4}/.test(date)) {
+                      var parsed;
+                      
+                      if (/(\d+)天前/.test(date)) {
+                          parsed = /(\d+)\s*天前/.exec(date);
+                          date = moment().subtract(parsed[1], 'days').toISOString().slice(0, 10);
+          
+                      } else if (/(\d+)小时前/.test(date)) {
+                          parsed = /(\d+)\s*小时前/.exec(date);
+                          date = moment().subtract(parsed[1], 'hours').toISOString().slice(0, 10);
+          
+                      } else if (/昨天(\d+:\d+)/.test(date)) {
+                          parsed = /昨天(\d+:\d+)/.exec(date);
+                          date = moment().subtract(1, 'days').format("YYYY-MM-DD") + ' ' + parsed[1];
+          
+                      } else {
+                          parsed = /(^|\s)(\d+)\s(\w+)(\s|$)/.exec(date);
+                          if (parsed) {
+                              var num = parsed[2],
+                                  duration = timeGaps[parsed[3]];
+                              if (duration) {
+                                  date = moment().subtract(num, duration).toISOString().slice(0, 10);
+                              }
+                          }
+                      }
+                  }
+              }
+            }
+            return date;
+          }
+
         var loc = window.location,
+            hlang = navigator.language,
+            translations = {
+                "minutes": ["minutes", "minuti", "minutos", "minuten", "minuten"],
+                "hours": ["hour", "hours", "heure", "heures", "ora", "ore", "hora", "horas", "stunden", "uur", "小时前"],
+                "days": ["day", "days", "jour", "jours", "giorno", "giorni", "día", "días", "dia", "dias", "tag", "tagen", "dag", "dagen", "天前"]
+            },
+            timeGaps = {},
             href = loc.href,
             styles = [
                 '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 300px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
@@ -13,6 +61,12 @@
             query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
             search;
             ~href.search(/:\/\/([^.]+\.)?qwant\.[^/]+\//) ? search = 'Qwant' : search = 'DuckDuckGo';
+        Object.keys(translations).forEach(function(k) {
+            translations[k].forEach(function(t) {
+                timeGaps[t] = k;
+            });
+        });
+        moment.locale(hlang);
         async function moreResult(href){
             let button;
             if(~href.search(/:\/\/([^.]+\.)?duckduckgo\.[^/]+\//)){
@@ -34,7 +88,7 @@
         }
 
         async function scrape(n, href) {
-            let scrap_str, ele, title, link, desc;
+            let scrap_str, ele, title, link, description, date;
             let results = [];
             ~href.search(/:\/\/([^.]+\.)?duckduckgo\.[^/]+\//) ? scrap_str = 'li[data-layout="organic"] article' : scrap_str = 'div[data-testid="webResult"]';
             var scrap = document.querySelectorAll(scrap_str);
@@ -57,16 +111,21 @@
                     link = titleElement ? titleElement.href : null;
                     let descriptionElement = ele.querySelector('article>div>div>div>span');
                     description = descriptionElement ? descriptionElement.textContent : null;
+                    let try_date = descriptionElement.querySelector('span>span[class]');
+                    date = try_date ? await relative_date_converter(try_date.textContent) : "";
+                    
                 } else {
                     title = ele.querySelector('a>div>span').textContent;
                     link = ele.getAttribute('domain');
                     description = ele.querySelectorAll('div[data-testid="webResult"]>div>div>div>div>div')[1].textContent;
+                    date = ""
                 }
                 
                 results.push({
                     title: title,
                     link: link,
-                    description: description
+                    description: description,
+                    date: date
                 });
                 updateProgress(results.length, n);
             }
@@ -100,4 +159,5 @@
         });
 
     });
+});
 })();
