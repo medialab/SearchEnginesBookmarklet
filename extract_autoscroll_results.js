@@ -3,14 +3,16 @@
     artoo.injectScript("//medialab.github.io/google-bookmarklets/FileSaver.min.js", function() {
 
       var loc = window.location,
-        hlang = navigator.language,
+        href = loc.href,
         translations = {
           "minutes": ["minutes", "minuti", "minutos", "minuten", "minuten"],
           "hours": ["hour", "hours", "heure", "heures", "ora", "ore", "hora", "horas", "stunden", "uur", "小时前"],
           "days": ["day", "days", "jour", "jours", "giorno", "giorni", "día", "días", "dia", "dias", "tag", "tagen", "dag", "dagen", "天前"]
         },
         timeGaps = {},
-        href = loc.href,
+        query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
+        hlang = navigator.language,
+        search = ~href.search(/:\/\/([^.]+\.)?qwant\.[^/]+\//) ? 'Qwant' : 'DuckDuckGo',
         styles = [
           '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 300px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
           '#BMoverlay h2 {margin: 0px 0px 15px 0px; text-decoration: underline;}',
@@ -18,9 +20,7 @@
           '#BMprogressContainer {background-color: #f3f3f3; border-radius: 5px; width: 100%; height: 20px; margin-top: 10px;}',
           '#BMprogressBar {height: 100%; width: 0; background-color: #4caf50; border-radius: 5px;}',
           '#BMprogressText {margin-top: 5px;}'
-        ],
-        query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
-        search = ~href.search(/:\/\/([^.]+\.)?qwant\.[^/]+\//) ? 'Qwant' : 'DuckDuckGo';
+        ];
 
       Object.keys(translations).forEach(function(k) {
         translations[k].forEach(function(t) {
@@ -29,6 +29,9 @@
       });
 
       moment.locale(hlang);
+      moment.createFromInputFallback = function(config) {
+        config._d = new Date(config._i);
+      };
       function relative_date_converter(date){
         if (!date) return;
         try {
@@ -141,10 +144,11 @@
         return results;
       }
 
+      // In-page popup injection
       artoo.$('body').append(
         '<style>' + styles.join('\n') + '</style>' +
         '<div id="BMoverlay">' +
-          '<h2>Extract '+ search +' Results</h2>' +
+          '<h2>Extract ' + search + ' Results</h2>' +
           '<p>Number of results :</p>' +
           '<input type="number" id="BM_number"></br></br>' +
           '<input class="BMdownload" type="button" value="Begin scraping" required></input><br/>' +
@@ -155,7 +159,6 @@
         '</div>'
       );
 
-      // In-page popup injection
       artoo.$("#BMoverlay .BMdownload").on('click', async function(){
         input = document.querySelector('input[id="BM_number"]')
         const n = parseInt(input.value, 10);
