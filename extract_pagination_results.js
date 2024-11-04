@@ -1,7 +1,7 @@
 (function(){
   HTMLBodyElement.prototype.appendChild = Node.prototype.appendChild;
   artoo.injectScript("//medialab.github.io/google-bookmarklets/moment-with-locales.min.js", function() {
-  artoo.injectScript("//cdn.rawgit.com/eligrey/FileSaver.js/e9d941381475b5df8b7d7691013401e171014e89/FileSaver.min.js", function() {
+  artoo.injectScript("//medialab.github.io/google-bookmarklets/FileSaver.min.js", function() {
     moment.createFromInputFallback = function(config) {
       config._d = new Date(config._i);
     };
