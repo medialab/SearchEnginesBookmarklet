@@ -24,28 +24,31 @@ img {
 document.addEventListener("DOMContentLoaded", function() {
   var buildBookmarklet = function(hrefId, scriptName) {
     var res = "javascript:(function(){" +
-                    "var script = document.createElement('script')," +
-                    "userAgent = navigator.userAgent," +
-                    "CSP = 'CSP blocking detected! Unable to load scripts.'," +
-                    "popup = '\\nTry to use this extension (you need to allow pop-up on your browser)';" +
-                    "script.type = 'text/javascript';" +
-                    "script.src = '" + window.location.href.replace(/^https?:/, '').replace(/\/?(index.html)?$/, '/') + scriptName + ".js';" +
-                    "var bod = document.getElementsByTagName('body')[0];" +
-                    "var href = window.location.href;" +
-                    "if(~href.search(/:\\/\\/([^.]+\\.)?bing\\.[^/]+\\//)){" +
-                    "HTMLBodyElement.prototype.appendChild = Node.prototype.appendChild;}" +
-                    "bod || (bod = document.createElement('body'), document.documentElement.appendChild(bod));" +
-                    "bod.appendChild(script);" +
-                    "script.onerror = function() {" +
-                    "if(userAgent.indexOf('Chrome') > -1) {" +
+                "var userAgent = navigator.userAgent," +
+                  "href = window.location.href," +
+                  "bod = document.getElementsByTagName('body')[0]," +
+                  "CSP = 'CSP detected: this website forbids your browser to load the scripts required for the bookmarklet!'," +
+                  "popup = '\\nTry to enforce it using a browser extension such as the one that will open in a new tab (first allow it to pop-up). Then activate the extension, refresh the page and retry the bookmarklet.'," +
+                  "script = document.createElement('script');" +
+                "script.type = 'text/javascript';" +
+                "script.src = '" + window.location.href.replace(/^https?:/, '').replace(/\/?(index.html)?$/, '/') + scriptName + ".js';" +
+                "if(~href.search(/:\\/\\/([^.]+\\.)?bing\\.[^/]+\\//)){" +
+                  "HTMLBodyElement.prototype.appendChild = Node.prototype.appendChild;" +
+                "}" +
+                "bod || (bod = document.createElement('body'), document.documentElement.appendChild(bod));" +
+                "bod.appendChild(script);" +
+                "script.onerror = function(){" +
+                  "if(userAgent.indexOf('Chrome') > -1){" +
                     "window.alert(CSP + popup);" +
-                    "window.open('https://chromewebstore.google.com/detail/allow-csp-content-securit/hnojoemndpdjofcdaonbefcfecpjfflh');}" +
-                    "else if (userAgent.indexOf('Firefox') > -1){" +
-                    "window.alert(CSP + popup);" +
-                    "window.open('https://addons.mozilla.org/en-US/firefox/addon/mheadercontrol/');}" +
-                    "else{" +
-                    "window.alert(CSP);}};" +
-                  "})()";
+                    "window.open('https://chromewebstore.google.com/detail/allow-csp-content-securit/hnojoemndpdjofcdaonbefcfecpjfflh');" +
+                  "}else if (userAgent.indexOf('Firefox') > -1){" +
+                    "window.alert(CSP + popup + '\\n(you should use the \"Record this site\" option of the extension)');" +
+                    "window.open('https://addons.mozilla.org/en-US/firefox/addon/mheadercontrol/');" +
+                  "}else{" +
+                    "window.alert(CSP + '\\nThis bookmarklet is intended to work only within Firefox or Chrome/Chromium.\\nPlease use one of these browsers and retry.');" +
+                  "}" +
+                "}" +
+              "})()";
     document.getElementById(hrefId).href = res.replace(/\s+/g, '%20');
   };
   buildBookmarklet("bookmark", "SearchEnginesBookmarklet");

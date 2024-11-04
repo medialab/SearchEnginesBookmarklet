@@ -24,7 +24,7 @@
     const searchRegexp = new RegExp("[#?&]" + queryArg + "="),
       replaceRegexp = new RegExp("^.*[#?&]" + queryArg + "=([^#?&]+).*$"),
       query = (~href.search(searchRegexp) ? href.replace(replaceRegexp, '$1') : undefined);
-    if (!query) return window.alert("Please search for a keyword first.");
+    if (!query) return window.alert("Please input your search query first.");
     var bod = document.getElementsByTagName("body")[0];
     bod || (bod = document.createElement("body"), document.documentElement.appendChild(bod));
     return bod;
