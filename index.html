@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
                   "href = window.location.href," +
                   "bod = document.getElementsByTagName('body')[0]," +
                   "CSP = 'CSP detected: this website forbids your browser to load the scripts required for the bookmarklet!'," +
-                  "popup = '\\nTry to enforce it using a browser extension such as the one that will open in a new tab (first allow it to pop-up). Then activate the extension, refresh the page and retry the bookmarklet.'," +
+                  "popup = '\\n\\nTry to enforce it using a browser extension such as the one that will open in a new tab (first allow it to pop-up).\\n\\nThen activate the extension, refresh the page and retry the bookmarklet.'," +
                   "script = document.createElement('script');" +
                 "script.type = 'text/javascript';" +
                 "script.src = '" + window.location.href.replace(/^https?:/, '').replace(/\/?(index.html)?$/, '/') + scriptName + ".js';" +
@@ -42,10 +42,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     "window.alert(CSP + popup);" +
                     "window.open('https://chromewebstore.google.com/detail/allow-csp-content-securit/hnojoemndpdjofcdaonbefcfecpjfflh');" +
                   "}else if (userAgent.indexOf('Firefox') > -1){" +
-                    "window.alert(CSP + popup + '\\n(you should use the \"Record this site\" option of the extension)');" +
+                    "window.alert(CSP + popup + '\\n\\n(you should use the \"Record this site\" option of the extension)');" +
                     "window.open('https://addons.mozilla.org/en-US/firefox/addon/mheadercontrol/');" +
                   "}else{" +
-                    "window.alert(CSP + '\\nThis bookmarklet is intended to work only within Firefox or Chrome/Chromium.\\nPlease use one of these browsers and retry.');" +
+                    "window.alert(CSP + '\\n\\nThis bookmarklet is intended to work only within Firefox or Chrome/Chromium.\\n\\nPlease use one of these browsers and retry.');" +
                   "}" +
                 "}" +
               "})()";
