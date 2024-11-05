@@ -24,6 +24,7 @@ img {
 document.addEventListener("DOMContentLoaded", function() {
   var buildBookmarklet = function(hrefId, scriptName) {
     var res = "javascript:(function(){" +
+                "window.SearchEnginesBookmarklet = '1.0';" +
                 "var userAgent = navigator.userAgent," +
                   "href = window.location.href," +
                   "bod = document.getElementsByTagName('body')[0]," +
