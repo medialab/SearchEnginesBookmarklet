@@ -1,24 +1,37 @@
 <html>
   <head>
     <title>Search Engines Bookmarklet</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
     <style>
 body {
   font-family: Sans-serif;
+  font-size: 1.2em;
   margin: auto;
+  width: 66%;
   padding-top: 3%;
   text-align: center;
 }
-img {
-  height: 48px;
-  margin: 12px;
+a, a:visited {
+  color: black;
+}
+small {
+  font-size: 0.5em;
 }
     </style>
   </head>
   <body>
-    <h1>Install Search Engines Bookmarklet</h1>
-    <p>This bookmarklet (built for Firefox &amp; Chrome only) can be used to easily extract search results from Google, DuckDuckGo, Baidu, Qwant and Bing.</p>
-    <p>Drag &amp; drop the image below into your bookmarks bar (you may first need to enable its display from your browser's menu):</p>
-    <a id="bookmark" href=""><img src="images/new-google.png" alt="SearchEnginesBookmarklet"/></a>
+    <h1>SearchEnginesBookmarklet<br/><small>(by <a target="_blank" href="https://medialab.sciencespo.fr/">médialab Sciences Po</a>)</small></h1>
+    <p>Here is a very simple tool to help easily extract as tabular data (CSV) the results of web search engines such as Google, DuckDuckGo, Bing, Baidu or Qwant.</p>
+    <p>Built as a <a target="_blank" href="https://en.wikipedia.org/wiki/Bookmarklet">javascript bookmarklet</a> (intended for Firefox &amp; Chrome only), it can be easily installed within a browser's bookmarks bar as a simple button to click in order to scrape results data without risking any ban as it still requires to load the search results page in the browser one by one.</p>
+    <br/>
+    <h3>How to install?</h3>
+    <p>Drag &amp; drop the image below into your bookmarks bar<br/>(you may first need to enable its display from your browser's menu):</p>
+    <p><a id="bookmark" href=""><img src="images/duckduckgo-google-bing-baidu-256.png" alt="🔍 SearchEnginesBookmarklet"/></a></p>
+    <br/>
+    <p>
+      <a target="_blank" href="https://medialab.sciencespo.fr/tools">Discover more médialab tools</a>&nbsp;&nbsp;&mdash;&nbsp;&nbsp;
+      <a target="_blank" href="https://github.com/medialab/SearchEnginesBookmarklet">Source code</a>
+    <p>
   </body>
   <script>
 document.addEventListener("DOMContentLoaded", function() {
