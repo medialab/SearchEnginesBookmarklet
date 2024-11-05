@@ -1,6 +1,6 @@
 (async function () {
-  artoo.injectScript("//medialab.github.io/google-bookmarklets/moment-with-locales.min.js", function() {
-    artoo.injectScript("//medialab.github.io/google-bookmarklets/FileSaver.min.js", function() {
+  artoo.injectScript("//medialab.github.io/SearchEnginesBookmarklet/moment-with-locales.min.js", function() {
+    artoo.injectScript("//medialab.github.io/SearchEnginesBookmarklet/FileSaver.min.js", function() {
 
       var loc = window.location,
         href = loc.href,

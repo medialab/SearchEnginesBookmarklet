@@ -1,10 +1,10 @@
 (function(){
-  const scriptsDomain = "//medialab.github.io/google-bookmarklets/";
+  const scriptsDomain = "//medialab.github.io/SearchEnginesBookmarklet/";
   // const scriptsDomain = "//localhost:4443/"; // for debug using `node serve-https.js`
 
   if ("undefined" == typeof window.SearchEnginesBookmarklet) {
     window.alert("It seems you are using an old version of this tool.\n\nThe new version works with more search engines such as DuckDuckGo, Baidu, Bing and Qwant.\n\nPlease remove it from your bookmarks and reinstall it by visiting the page that will open in a new tab (first allow it to pop-up).");
-    window.open("https://medialab.github.io/google-bookmarklets/");
+    window.open("https://medialab.github.io/SearchEnginesBookmarklet/");
   }
 
   const moreResults = "switch_more_results.js",
