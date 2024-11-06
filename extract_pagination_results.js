@@ -14,7 +14,7 @@
         query, hlang, total, start, search,
         styles = [
           '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 250px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
-          '#BMoverlay h2 {margin: 0px 0px 15px 0px; text-decoration: underline;}',
+          '#BMoverlay h2 {display: block; font-size: 20px; font-family: Arial, sans-serif; font-weight: bold; margin: 0px 0px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline;}',
           '#BMoverlay input[type="button"] {margin: 3px;}'
         ];
 
@@ -86,7 +86,7 @@
       }
 
       var pastdata, fulldata, newdata,
-        page = start/total,
+        page = start/total + 1,
         storage = 'scrap-query',
         storageKey = query + '/' + hlang + '/' + total,
         initStore = function(){
@@ -189,7 +189,7 @@
       artoo.$('body').append(
         '<style>' + styles.join('\n') + '</style>' +
         '<div id="BMoverlay">' +
-          '<h2>Extract ' + search + 'Results</h2>' +
+          '<h2>Extract ' + search + ' Results</h2>' +
           '<p>Search for "<b>' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>"<br/>' +
             'page ' + page + ' (with up to ' + total + ' urls per page)</p>' +
           '<p class="BMpageresults"></p>' +
@@ -202,7 +202,7 @@
       );
 
       var refresh = function(){
-        var donepages = artoo.store(storage + '-pages').sort().join('|');
+        var donepages = artoo.store(storage + '-pages').sort().join('-');
         if (!~artoo.store(storage + '-pages').indexOf(page)) {
           fulldata = pastdata.concat(newdata);
           artoo.store.concatTo(storage + '-pages', page);
@@ -214,7 +214,7 @@
         }
         artoo.$('#BMoverlay .BMdownloadAll').val('Download complete CSV with all ' + fulldata.length + ' urls');
         if (pastdata.length) {
-          artoo.$('#BMoverlay .BMoldresults').html('(already ' + pastdata.length + ' results collected from page' + (~donepages.search(/\|/) ? 's ' : ' ') + donepages + ')').show();
+          artoo.$('#BMoverlay .BMoldresults').html('(already ' + pastdata.length + ' results collected from page' + (~donepages.search(/\-/) ? 's ' : ' ') + donepages + ')').show();
           artoo.$('#BMoverlay .BMdownloadAll, #BMoverlay .BMreset').show();
           artoo.$('#BMoverlay .BMdownload').val('Download CSV with only this page\'s results (' + newdata.length + ')');
         } else {

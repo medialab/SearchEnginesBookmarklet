@@ -15,8 +15,9 @@
         search = ~href.search(/:\/\/([^.]+\.)?qwant\.[^/]+\//) ? 'Qwant' : 'DuckDuckGo',
         styles = [
           '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 300px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
-          '#BMoverlay h2 {margin: 0px 0px 15px 0px; text-decoration: underline;}',
+          '#BMoverlay h2 {display: block; font-size: 20px; font-family: Arial, sans-serif; font-weight: bold; margin: 0px 0px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline;}',
           '#BMoverlay input[type="button"] {margin: 3px;}',
+          '#BMnumber {width: 50px}',
           '#BMprogressContainer {background-color: #f3f3f3; border-radius: 5px; width: 100%; height: 20px; margin-top: 10px;}',
           '#BMprogressBar {height: 100%; width: 0; background-color: #4caf50; border-radius: 5px;}',
           '#BMprogressText {margin-top: 5px;}'
@@ -149,8 +150,8 @@
         '<style>' + styles.join('\n') + '</style>' +
         '<div id="BMoverlay">' +
           '<h2>Extract ' + search + ' Results</h2>' +
-          '<p>Number of results :</p>' +
-          '<input type="number" id="BM_number"></br></br>' +
+          '<p>Maximum number of results desired:</p>' +
+          '<input type="number" id="BMnumber" value="100"></br></br>' +
           '<input class="BMdownload" type="button" value="Begin scraping" required></input><br/>' +
           '<div id="BMprogressContainer">' +
             '<div id="BMprogressBar"></div>' +
@@ -160,7 +161,7 @@
       );
 
       artoo.$("#BMoverlay .BMdownload").on('click', async function(){
-        input = document.querySelector('input[id="BM_number"]')
+        input = document.querySelector('#BMnumber')
         const n = parseInt(input.value, 10);
         const data = await scrape(n, href);
         updateProgress(data.length, data.length);

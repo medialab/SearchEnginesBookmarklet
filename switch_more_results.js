@@ -1,4 +1,5 @@
 (function(){
+
   var loc = window.location,
     href = loc.href,
     populateSelect = function(selector, values, curVal){
@@ -13,9 +14,9 @@
     },
     styles = [
       '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 250px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
-      '#BMoverlay h2 {margin: 0px 0px 30px 0px; text-decoration: underline;}',
+      '#BMoverlay h2 {display: block; font-size: 20px; font-family: Arial, sans-serif; font-weight: bold; margin: 0px 0px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline;}',
       '#BMoverlay select {margin-left: 10px;}',
-      '#BMoverlay .BMurl {width: 90%;}'
+      '#BMoverlay .BMurl {width: 95%;}'
     ];
 
   artoo.$('body').append('<style>' + styles.join('\n') + '</style>' +
