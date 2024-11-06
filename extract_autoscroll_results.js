@@ -149,7 +149,7 @@
       artoo.$('body').append(
         '<style>' + styles.join('\n') + '</style>' +
         '<div id="BMoverlay">' +
-          '<h2>Extract ' + search + ' Results</h2>' +
+          '<h2>Extract ' + search + ' results</h2>' +
           '<p>Maximum number of results desired:</p>' +
           '<input type="number" id="BMnumber" value="100"></br></br>' +
           '<input class="BMdownload" type="button" value="Begin scraping" required></input><br/>' +

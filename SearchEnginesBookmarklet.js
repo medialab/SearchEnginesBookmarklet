@@ -26,7 +26,7 @@
       body = document.createElement("body");
       document.documentElement.appendChild(body);
     }
-    if (typeof body !== "object") return;
+    if (typeof body !== "object") return window.alert("Could not find any webpage content...");
 
     var a = document.createElement("script");
     console.log("Loading artoo.js...");

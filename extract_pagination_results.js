@@ -189,7 +189,7 @@
       artoo.$('body').append(
         '<style>' + styles.join('\n') + '</style>' +
         '<div id="BMoverlay">' +
-          '<h2>Extract ' + search + ' Results</h2>' +
+          '<h2>Extract ' + search + ' results</h2>' +
           '<p>Search for "<b>' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>"<br/>' +
             'page ' + page + ' (with up to ' + total + ' urls per page)</p>' +
           '<p class="BMpageresults"></p>' +
