@@ -42,12 +42,12 @@ img:hover {
 document.addEventListener("DOMContentLoaded", function() {
   var buildBookmarklet = function(hrefId, scriptName) {
     var res = "javascript:(function(){" +
-                "if (window.SearchEnginesBookmarklet !== undefined) return;" +
+                "if (window.SearchEnginesBookmarklet !== undefined && document.getElementById('BMoverlay')) return;" +
                 "window.SearchEnginesBookmarklet = '1.0';" +
                 "var userAgent = navigator.userAgent," +
                   "href = window.location.href," +
                   "bod = document.getElementsByTagName('body')[0]," +
-                  "CSP = 'CSP detected: this website forbids your browser to load the scripts required for the bookmarklet!'," +
+                  "CSP = 'CSP detected: this website forbids your browser to load the scripts required for SearchEnginesBookmarklet!'," +
                   "popup = '\\n\\nTry to enforce it using a browser extension such as the one that will open in a new tab (first allow it to pop-up).\\n\\nThen activate the extension, refresh the page and retry the bookmarklet.'," +
                   "script = document.createElement('script');" +
                 "script.type = 'text/javascript';" +
@@ -60,9 +60,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 "script.onerror = function(){" +
                   "if(userAgent.indexOf('Chrome') > -1){" +
                     "window.alert(CSP + popup);" +
-                    "window.open('https://chromewebstore.google.com/detail/allow-csp-content-securit/hnojoemndpdjofcdaonbefcfecpjfflh');" +
+                    "window.open('https://chromewebstore.google.com/detail/disable-content-security/ieelmcmcagommplceebfedjlakkhpden');" +
                   "}else if (userAgent.indexOf('Firefox') > -1){" +
-                    "window.alert(CSP + popup + '\\n\\n(you should use the \"Record this site\" option of the extension)');" +
+                    "window.alert(CSP + popup + '\\n\\n(you should use the \"Disable CSP\" option of the extension)');" +
                     "window.open('https://addons.mozilla.org/en-US/firefox/addon/mheadercontrol/');" +
                   "}else{" +
                     "window.alert(CSP + '\\n\\nThis bookmarklet is intended to work only within Firefox or Chrome/Chromium.\\n\\nPlease use one of these browsers and retry.');" +
