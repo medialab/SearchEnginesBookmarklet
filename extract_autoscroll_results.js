@@ -41,7 +41,7 @@
       function relative_date_converter(date){
         if (!date) return;
         let res;
-        if (/^\d{4}年\d{1,2}月\d{1,2}日$/.test(date)) {
+        if (/\b\d{4}年\d{1,2}月\d{1,2}日$/.test(date)) {
           res = moment(date, "YYYY年MM月DD日").format("YYYY-MM-DD");
         } else if (/^.* · (\d{4})\b.*$/.test(date)) {
           res = date.split("·")[1].trim();
