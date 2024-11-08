@@ -84,7 +84,7 @@
 
       function moreResult(href){
         let button;
-        if(~href.search(/:\/\/([^.]+\.)?duckduckgo\.[^/]+\//)){
+        if(search === 'DuckDuckGo') {
           button = document.getElementById('more-results');
         } else {
           button = document.querySelector('[data-testid="buttonShowMore"]');
@@ -113,7 +113,7 @@
         let ele, title, link, description, date,
           results = [];
           more = 1,
-          scrap_str = ~href.search(/:\/\/([^.]+\.)?duckduckgo\.[^/]+\//) ? 'li[data-layout="organic"] article' : 'div[data-testid="webResult"]';
+          scrap_str = search === 'DuckDuckGo' ? 'li[data-layout="organic"] article' : 'div[data-testid="webResult"]';
         var scrap = document.querySelectorAll(scrap_str);
 
         updateProgress(scrap.length, n);
@@ -130,7 +130,7 @@
           ele = scrap[i];
 
           // DuckDuckGo results
-          if(~href.search(/:\/\/([^.]+\.)?duckduckgo\.[^/]+\//)){
+          if (search === 'DuckDuckGo') {
             let titleElement = ele.querySelector('h2 a');
             title = titleElement ? titleElement.textContent : null;
             link = titleElement ? titleElement.href : null;

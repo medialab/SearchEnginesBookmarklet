@@ -114,13 +114,17 @@
       function scrape(href) {
         let results = [];
         var link, title, desc, date,
-          scrap = document.querySelectorAll(~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//) ? 'li[class="b_algo"]' : 'div[class="result c-container xpath-log new-pmd"]');
+          scrap = document.querySelectorAll(
+            search === 'Bing'
+            ? 'li[class="b_algo"]'
+            : 'div[class="result c-container xpath-log new-pmd"]'
+          );
 
         for (let i = 0; i < scrap.length; i++) {
           let ele = scrap[i];
 
           // Bing results
-          if (~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//)) {
+          if (search === 'Bing') {
             let linkElement = ele.querySelector('div[class="b_attribution"]');
             link = linkElement ? linkElement.textContent : null;
             title = ele.querySelector('h2 a[target="_blank"]').textContent;
@@ -131,7 +135,7 @@
             if (date) date = date.textContent;
 
           // Baidu results
-          } else if (~href.search(/:\/\/([^.]+\.)?baidu\.[^/]+\//)) {
+          } else if (search === 'Baidu') {
             let titleElement = ele.querySelector('div>div>h3>a');
             title = titleElement ? titleElement.textContent : null;
             link = ele.getAttribute('mu');
@@ -156,7 +160,7 @@
       }
 
       // Google results
-      if (~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
+      if (search === 'Google') {
         newdata = artoo.scrape("#rso .g > div[data-hveid], #rso .g[data-hveid], #rso .g > g-section-with-header > div > div, div[data-async-context] .g[data-hveid]", {
           name: {
             sel: 'div a[ping] h3, div a[data-ved] h3',
