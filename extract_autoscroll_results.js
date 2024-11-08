@@ -195,7 +195,7 @@
         saveAs(
           new Blob([artoo.writers.csv(data)],
                    {type: "text/plain;charset=utf-8"}),
-          search.toLowerCase() + "-results-" + query + "-first" + data.length + ".csv"
+          search.toLowerCase() + "-results-" + query.replace(" ", "%20") + "-first" + data.length + ".csv"
         );
       });
 
