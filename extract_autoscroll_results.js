@@ -19,8 +19,8 @@
           '#BMoverlay #BMlogo {position: absolute; top: 8px; right: 8px; width: 64px; height: 64px;}',
           '#BMoverlay h2 {display: block; font-size: 17px; font-weight: bold; margin: 0px 70px 25px 0px; padding: 0; line-height: 22px; font-family: monospace;}',
           '#BMoverlay p {display: block; font-size: 14px; font-family: monospace; margin: 12px 0; padding: 0; line-height: 16px;}',
-          '#BMoverlay #BMnumber {margin: 0 0 0 10px; padding: 0 5px; height: 20px; color: unset; border: 1px solid #555; border-radius: 1px; font-family: monospace; width:45px; box-sizing: content-box; font-size: 14px;}',
-          '#BMoverlay input[type="button"] {margin: 5px 0; padding: 5px 10px; font-family: monospace; font-size: 12px; font-weight: bold; border: 1px solid #555; border-radius: 1px; line-height: 14px;}',
+          '#BMoverlay #BMnumber {margin: 0 0 0 10px; padding: 0 5px; height: 20px; color: unset; border: 1px solid #555; border-radius: 2px; font-family: monospace; width:45px; box-sizing: content-box; background-color: #EEE; font-size: 14px;}',
+          '#BMoverlay input[type="button"] {margin: 5px 0; padding: 5px 10px; font-family: monospace; font-size: 14px; font-weight: bold; border: 1px solid #555; border-radius: 2px; background-color: #EEE; line-height: 14px;}',
           '#BMprogressContainer {background-color: #f3f3f3; border-radius: 5px; width: 100%; height: 20px; margin-top: 10px;}',
           '#BMprogressBar {height: 100%; width: 0; background-color: #4caf50; border-radius: 5px;}',
           '#BMprogressText {margin-top: 5px;}',
@@ -178,7 +178,7 @@
           '</p>' +
           '<p>The page will be automatically expanded until reaching desired number of results.<br/>' +
              'You might need to validate some CAPTCHA.</p>' +
-          '<input class="BMdownload" type="button" value="Start download"></input>' +
+          '<input class="BMdownload" type="button" value="Start download!"></input>' +
           '<div id="BMprogressContainer">' +
             '<div id="BMprogressBar"></div>' +
           '</div>' +
