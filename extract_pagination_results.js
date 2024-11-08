@@ -200,7 +200,7 @@
         artoo.store.set(key, artoo.store(key).concat(arr));
       }
 
-      if (artoo.store(storage) !== storageKey) {
+      if (artoo.store(storage) !== storageKey || page === 1) {
         initStore();
       } else {
         pastdata = artoo.store(storage + '-data') || [];
@@ -220,12 +220,12 @@
             ' (with up to ' + total + ' results per page)</p>' +
           '<p class="BMpageresults"></p>' +
           '<p class="BMoldresults"></p>' +
-          '<input class="BMdownload" type="button"></input>' +
           (displayContinue
           ? '<input class="BMcontinue" type="button" value="Keep existing results & continue to the next page"></input>'
           : '') +
           '<input class="BMdownloadAll" type="button"></input>' +
-          '<input class="BMreset" type="button" value="Clear results previously kept for this query"></input>' +
+          '<input class="BMdownload" type="button"></input>' +
+          '<input class="BMreset" type="button" value="Clear stored results and restart from first page"></input>' +
           '<p id="BMfooter">Powered by <a target="_blank" href="https://medialab.sciencespo.fr/">médialab Sciences Po</a> &ndash; Discover more <a target="_blank" href="https://medialab.sciencespo.fr/en/tools/">médialab tools</a>!</p>' +
         '</div>'
       );
@@ -254,10 +254,21 @@
       };
       refresh();
 
+      const redirect = function(tot, st) {
+        if (search === 'Google') {
+          window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&hl=' + hlang + "&num=" + tot + "&start=" + st;
+        } else if (search === 'Bing') {
+          window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&count=' + tot + '&first=' + st + '&FORM=PERE';
+        } else if (search === 'Baidu') {
+          window.location.href = loc.protocol + "//" + loc.hostname + "/s?wd=" + query + '&rn=' + tot + '&pn=' + st;
+        }
+      };
+
       artoo.$("#BMoverlay .BMreset").on('click', function(){
         initStore();
-        refresh();
+        redirect(total, 0);
       });
+
       artoo.$("#BMoverlay .BMdownload").on('click', function(){
         saveAs(
           new Blob([artoo.writers.csv(newdata)],
@@ -265,6 +276,7 @@
           loc.hostname.split(".").at(1) + "-results-" + hlang + "-" + query + "-page" + page + ".csv"
         );
       });
+
       artoo.$("#BMoverlay .BMdownloadAll").on('click', function(){
         saveAs(
           new Blob([artoo.writers.csv(fulldata)],
@@ -272,14 +284,9 @@
           loc.hostname.split(".").at(1) + "-results-" + hlang + "-" + query + "-pages" + artoo.store(storage + '-pages').sort().join('-') + ".csv"
         );
       });
+
       artoo.$("#BMoverlay .BMcontinue").on('click', function(){
-        if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
-          window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&hl=' + hlang + "&num=" + total + "&start=" + (start + total);
-        } else if(~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//)){
-          window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&first=' + (start + total) + '&count=' + total + '&FORM=PERE';
-        } else if(~href.search(/:\/\/([^.]+\.)?baidu\.[^/]+\//)){
-          window.location.href = loc.protocol + "//" + loc.hostname + "/s?wd=" + query + '&pn=' + (start + total) + '&rn=' + total;
-        }
+        redirect(total, start + total);
       });
     });
   });
