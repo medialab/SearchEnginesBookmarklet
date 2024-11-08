@@ -1,6 +1,7 @@
 (function(){
   var loc = window.location,
     href = loc.href,
+    search,
     styles = [
       '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 400px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
       '#BMoverlay h1 {display: block; font-size: 23px; font-weight: bold; margin: 0px 70px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline; font-family: monospace; box-sizing: content-box;}',
@@ -25,17 +26,25 @@
     });
   };
 
+  if (~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)) {
+    search = 'Google';
+  } else if(~href.search(/:\/\/([^.]+\.)?baidu\.[^/]+\//)) {
+    search = 'Baidu';
+  } else if(~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//)) {
+    search = 'Bing';
+  }
+
   // In-page popup injection
   artoo.$('body').append(
     '<style>' + styles.join('\n') + '</style>' +
     '<div id="BMoverlay">' +
       '<h1>SearchEngineBookmarklets</h1>' +
       '<img id="BMlogo" src="https://medialab.github.io/SearchEnginesBookmarklet/images/duckduckgo-google-bing-baidu-256.png" alt="SEB logo" />' +
-      '<h2>Access a page with more results</h2>' +
+      '<h2>Access ' + search + ' with more results</h2>' +
       '<p>How many results per page?' +
         '<select class="BMresults"></select>' +
       '</p>' +
-      (~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)
+      (search === 'Google'
       ? '<p>Which language?' +
            '<select class="BMlang"></select>' +
         '</p>'
@@ -49,7 +58,7 @@
   );
 
   // Google
-  if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
+  if (search === 'Google') {
     var query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
       hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.replace(/-.*$/, '') : 'fr')),
       total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100),
@@ -62,7 +71,7 @@
     populateSelect('#BMoverlay .BMresults', results, total);
 
   // Baidu
-  } else if(~href.search(/:\/\/([^.]+\.)?baidu\.[^/]+\//)){
+  } else if (search === 'Baidu') {
     var query = (~href.search(/[#?&]wd=/) ? href.replace(/^.*[#?&]wd=([^#?&]+).*$/, '$1') : undefined),
       rn = (~href.search(/rn=/) ? parseInt(href.replace(/^.*[#?&]rn=(\d+).*$/, '$1')) : 50),
       pn = (~href.search(/pn=/) ? parseInt(href.replace(/^.*[#?&]pn=(\d+).*$/, '$1')) : 0),
@@ -73,7 +82,7 @@
     populateSelect('#BMoverlay .BMresults', results, rn);
 
   // Bing
-  } else if(~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//)){
+  } else if (search === 'Bing') {
     var query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
       count = (~href.search(/count=/) ? parseInt(href.replace(/^.*[#?&]count=(\d+).*$/, '$1')) : 30),
       first = (~href.search(/first=/) ? parseInt(href.replace(/^.*[#?&]first=(\d+).*$/, '$1')) : 0),
