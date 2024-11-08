@@ -56,10 +56,12 @@
         config._d = new Date(config._i);
       };
       function relative_date_converter(date){
-        let res;
         if (!date) return;
+        let res;
         if (/^\d{4}年\d{1,2}月\d{1,2}日$/.test(date)) {
           res = moment(date, "YYYY年MM月DD日").format("YYYY-MM-DD");
+        } else if (/^.* · (\d{4})\b.*$/.test(date)) {
+          res = date.split("·")[1].trim();
         } else {
           res = date
             .replace(/\bf[eé]vr?(ier|\.)?\b/, "feb")
@@ -71,6 +73,7 @@
             .replace(/\bdéc(embre|\.)?\b/, "dec");
           res = moment(res).format("YYYY-MM-DD");
         }
+        res = res.replace("Invalid date", "");
         if (!/\d{4}/.test(res)) {
           var parsed;
           if (/(\d+)天前/.test(date)) {
