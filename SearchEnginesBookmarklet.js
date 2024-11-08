@@ -39,7 +39,7 @@
 
   // Google
   if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
-    injectScriptWithArtoo("q", href.includes("num=") && href.includes("start=") ? pagination : moreResults);
+    injectScriptWithArtoo("q", href.includes("num=") ? pagination : moreResults);
   }
 
   // DuckDuckGo
@@ -49,7 +49,7 @@
 
   // Baidu
   else if(~href.search(/:\/\/([^.]+\.)?baidu\.[^/]+\//)){
-    injectScriptWithArtoo("wd", href.includes("rn=") && href.includes("pn=") ? pagination : moreResults);
+    injectScriptWithArtoo("wd", href.includes("rn=") ? pagination : moreResults);
   }
 
   // Qwant
@@ -60,7 +60,7 @@
   // Bing
   else if(~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//)){
     HTMLBodyElement.prototype.appendChild = Node.prototype.appendChild;
-    injectScriptWithArtoo("q", href.includes("q=") && href.includes("first=") ? pagination : moreResults);
+    injectScriptWithArtoo("q", href.includes("count=") ? pagination : moreResults);
   }
 
   else window.alert("You can only use this bookmarklet on Google, DuckDuckGo, Baidu, Qwant and Bing.");
