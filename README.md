@@ -4,11 +4,9 @@ Harvesting lists of urls, titles, dates and descriptions from a query on a searc
 
 SearchEnginesBookmarklet is a low tech solution to this need by offering you an easy way to do directly from within your browser.
 
-Install it in a few clicks from the following page:
+Install it in a few clicks from the following page: [https://medialab.github.io/SearchEnginesBookmarklet/](https://medialab.github.io/SearchEnginesBookmarklet/)
 
-[https://medialab.github.io/SearchEnginesBookmarklet/](https://medialab.github.io/SearchEnginesBookmarklet/)
-
-<img src="images/install-bookmarklet.png"/>
+<a href="https://medialab.github.io/SearchEnginesBookmarklet/"><img src="images/install-bookmarklet.png"/></a>
 
 
 It works as a small icon to drag and drop into your browser's bookmarks bar, allowing you to:
