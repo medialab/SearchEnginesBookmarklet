@@ -1,14 +1,25 @@
-# Search Engines Bookmarklet
+# SearchEnginesBookmarklet
 
-Harvesting lists of urls, titles, dates and descriptions from a query on a search engine such as Google, DuckDuckGo or Baidu is a recurrent need in digital methods and a hardly automatable one because of those website's restrictions towards robots.
-Search Engines Bookmarklet is a low tech solution to this need by offering you an easy way to do directly from within your browser.
-It works as a small icon to drag and drop into your browser's bookmarks bar, allowing you:
-- to first switch from a regular search results page to one with up to a 100 results per page when the search engines allows it;
-- then to download in one click the page's results as a CSV file, or to store them in the browser's memory and navigate to the next results page in order to download more results at once.
+Harvesting lists of urls, titles, dates and descriptions from a query on a search engine such as Google, DuckDuckGo, Baidu, Bing or Qwant is a recurrent need in digital methods and a hardly automatable one because of those website's restrictions towards robots.
+
+SearchEnginesBookmarklet is a low tech solution to this need by offering you an easy way to do directly from within your browser.
+
+Install it in a few clicks from the following page:
+
+[https://medialab.github.io/SearchEnginesBookmarklet/](https://medialab.github.io/SearchEnginesBookmarklet/)
+
+<img src="images/install-bookmarklet.png"/>
+
+
+It works as a small icon to drag and drop into your browser's bookmarks bar, allowing you to:
+
+- first switch from a regular search results page to one with up to a 100 results per page when the search engines allows it;
+- then download in one click the page's results as a CSV tabular file, or store them in the browser's memory and navigate to the next results page in order to download more results at once.
 
 <img src="images/bookmarklets.png"/>
 
-## Dev
+
+## Install local version for development
 
 ```bash
 # Install node's express dependency
@@ -30,3 +41,12 @@ https://localhost:4443/
 
 # Then install your development version of the bookmarklet as usual by dragging and dropping the image from that page into your bookrmarks bar
 ```
+
+
+## Credits & License
+
+[Benjamin Ooghe-Tabanou](https://github.com/boogheta), [Julien Pontoire](https://github.com/jpontoire) & al @ [Sciences Po médialab](https://github.com/medialab)
+
+Discover more of our projects at [médialab tools](http://medialab.sciencespo.fr/en/tools).
+
+SearchEnginesBookmarklet is a free open source software released under [GPL 3.0 license](LICENSE).

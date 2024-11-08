@@ -8,9 +8,9 @@
       '#BMoverlay #BMlogo {position: absolute; top: 8px; right: 8px; width: 64px; height: 64px;}',
       '#BMoverlay h2 {display: block; font-size: 17px; font-weight: bold; margin: 0px 70px 25px 0px; padding: 0; line-height: 22px; font-family: monospace;}',
       '#BMoverlay p {display: block; font-size: 14px; font-family: monospace; margin: 12px 0; padding: 0; line-height: 16px;}',
-      '#BMoverlay select {margin: 0 0 0 10px; padding: 0 5px; height: 20px; color: unset; border: 1px solid #555; border-radius: 1px; font-family: monospace;}',
+      '#BMoverlay select {margin: 0 0 0 10px; padding: 0 5px; height: 20px; color: unset; border: 1px solid #555; border-radius: 2px; background-color: #EEE; font-family: monospace;}',
       '#BMoverlay .BMurl {width: 95%; font-family: monospace; font-size: 12px;}',
-      '#BMoverlay .BMredirect {font-size: 14px; font-family: monospace; padding: 5px 10px; font-weight: bold;}',
+      '#BMoverlay .BMredirect {font-size: 14px; font-family: monospace; padding: 5px 10px; font-weight: bold; border: 1px solid #555; border-radius: 2px; background-color: #EEE;}',
       '#BMoverlay #BMfooter {margin: 15px 0 0 0; font-size: 10px; color: #555;}',
       '#BMoverlay #BMfooter a, #BMoverlay #BMfooter a:visited {color: black; text-decoration: underline; color: #555;}'
     ];
