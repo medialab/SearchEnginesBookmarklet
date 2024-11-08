@@ -11,7 +11,7 @@
           "days": ["day", "days", "jour", "jours", "giorno", "giorni", "día", "días", "dia", "dias", "tag", "tagen", "dag", "dagen", "天前"]
         },
         timeGaps = {},
-        query, hlang, total, start, search,
+        query, hlang, total, start, search, nextPageLink,
         styles = [
           '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 400px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
           '#BMoverlay h1 {display: block; font-size: 23px; font-weight: bold; margin: 0px 70px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline; font-family: monospace; box-sizing: content-box;}',
@@ -29,6 +29,7 @@
         total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100);
         start = (~href.search(/start=/) ? parseInt(href.replace(/^.*[#?&]start=(\d+).*$/, '$1')) : 0);
         search = "Google";
+        nextPageLink = "#pnnext";
 
       } else if(~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//)){
         query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
@@ -36,6 +37,7 @@
         total = (~href.search(/count=/) ? parseInt(href.replace(/^.*[#?&]count=(\d+).*$/, '$1')) : 30);
         start = (~href.search(/first=/) ? parseInt(href.replace(/^.*[#?&]first=(\d+).*$/, '$1')) : 0);
         search = "Bing";
+        nextPageLink = ".sw_next";
 
       } else if(~href.search(/:\/\/([^.]+\.)?baidu\.[^/]+\//)){
         query = (~href.search(/[#?&]wd=/) ? href.replace(/^.*[#?&]wd=([^#?&]+).*$/, '$1') : undefined);
@@ -43,6 +45,7 @@
         total = (~href.search(/rn=/) ? parseInt(href.replace(/^.*[#?&]rn=(\d+).*$/, '$1')) : 50);
         start = (~href.search(/pn=/) ? parseInt(href.replace(/^.*[#?&]pn=(\d+).*$/, '$1')) : 0);
         search = "Baidu";
+        nextPageLink = "a.n:last-child";
       }
 
       Object.keys(translations).forEach(function(k) {
@@ -203,6 +206,8 @@
         pastdata = artoo.store(storage + '-data') || [];
       }
 
+      const displayContinue = !!(document.querySelector(nextPageLink));
+
       // In-page popup injection
       artoo.$('body').append(
         '<style>' + styles.join('\n') + '</style>' +
@@ -211,11 +216,14 @@
           '<img id="BMlogo" src="https://medialab.github.io/SearchEnginesBookmarklet/images/duckduckgo-google-bing-baidu-256.png" alt="SEB logo" />' +
           '<h2>Extract ' + search + ' results</h2>' +
           '<p>Search for «&nbsp;<b>' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>&nbsp;»<br/>' +
-            'page ' + page + ' (with up to ' + total + ' results per page)</p>' +
+            (displayContinue ? 'page ' + page : 'last page') +
+            ' (with up to ' + total + ' results per page)</p>' +
           '<p class="BMpageresults"></p>' +
           '<p class="BMoldresults"></p>' +
-          '<input class="BMcontinue" type="button" value="Keep existing results & continue to the next page"></input>' +
           '<input class="BMdownload" type="button"></input>' +
+          (displayContinue
+          ? '<input class="BMcontinue" type="button" value="Keep existing results & continue to the next page"></input>'
+          : '') +
           '<input class="BMdownloadAll" type="button"></input>' +
           '<input class="BMreset" type="button" value="Clear results previously kept for this query"></input>' +
           '<p id="BMfooter">Powered by <a target="_blank" href="https://medialab.sciencespo.fr/">médialab Sciences Po</a> &ndash; Discover more <a target="_blank" href="https://medialab.sciencespo.fr/en/tools/">médialab tools</a>!</p>' +
@@ -235,7 +243,7 @@
         }
         artoo.$('#BMoverlay .BMdownloadAll').val('Download complete CSV with all ' + fulldata.length + ' results');
         if (pastdata.length) {
-          artoo.$('#BMoverlay .BMoldresults').html('(already ' + pastdata.length + ' results collected from page' + (~donepages.search(/\-/) ? 's ' : ' ') + donepages + ')').show();
+          artoo.$('#BMoverlay .BMoldresults').html('(already ' + pastdata.length + ' results collected<br/>from page' + (~donepages.search(/\-/) ? 's ' : ' ') + donepages + ')').show();
           artoo.$('#BMoverlay .BMdownloadAll, #BMoverlay .BMreset').show();
           artoo.$('#BMoverlay .BMdownload').val('Download CSV with only this page\'s results (' + newdata.length + ')');
         } else {
