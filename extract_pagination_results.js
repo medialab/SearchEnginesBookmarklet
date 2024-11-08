@@ -247,10 +247,18 @@
         refresh();
       });
       artoo.$("#BMoverlay .BMdownload").on('click', function(){
-        saveAs(new Blob([artoo.writers.csv(newdata)], {type: "text/plain;charset=utf-8"}), loc.hostname.split(".").at(1) + "-results-" + hlang + "-" + query + "-page" + page + ".csv");
+        saveAs(
+          new Blob([artoo.writers.csv(newdata)],
+                   {type: "text/plain;charset=utf-8"}),
+          loc.hostname.split(".").at(1) + "-results-" + hlang + "-" + query + "-page" + page + ".csv"
+        );
       });
       artoo.$("#BMoverlay .BMdownloadAll").on('click', function(){
-        saveAs(new Blob([artoo.writers.csv(fulldata)], {type: "text/plain;charset=utf-8"}), loc.hostname.split(".").at(1) + "-results-" + hlang + "-" + query + "-pages" + artoo.store(storage + '-pages').sort().join('-') + ".csv");
+        saveAs(
+          new Blob([artoo.writers.csv(fulldata)],
+                   {type: "text/plain;charset=utf-8"}),
+          loc.hostname.split(".").at(1) + "-results-" + hlang + "-" + query + "-pages" + artoo.store(storage + '-pages').sort().join('-') + ".csv"
+        );
       });
       artoo.$("#BMoverlay .BMcontinue").on('click', function(){
         if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){

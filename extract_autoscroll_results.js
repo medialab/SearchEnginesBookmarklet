@@ -159,6 +159,12 @@
         return results;
       }
 
+    // Monitor input query modifications
+    artoo.$('input[type="search"]').on('selectionchange', function(ev) {
+      query = ev.target.value;
+      artoo.$("#BMquery").text(query);
+    });
+
       // In-page popup injection
       artoo.$('body').append(
         '<style>' + styles.join('\n') + '</style>' +
@@ -166,7 +172,7 @@
           '<h1>SearchEngineBookmarklets</h1>' +
           '<img id="BMlogo" src="https://medialab.github.io/SearchEnginesBookmarklet/images/duckduckgo-google-bing-baidu-256.png" alt="SEB logo" />' +
           '<h2>Extract ' + search + ' results</h2>' +
-          '<p>Search for «&nbsp;<b>' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>&nbsp;»</p>' +
+          '<p>Search for «&nbsp;<b id="BMquery">' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>&nbsp;»</p>' +
           '<p>How many results to collect at most?' +
             '<input type="number" id="BMnumber" value="' + (search === 'Qwant' ? 50 : 100) + '"></input>' +
           '</p>' +
@@ -186,7 +192,11 @@
         const n = parseInt(input.value, 10);
         const data = await scrape(n, href);
         updateProgress(data.length, data.length);
-        saveAs(new Blob([artoo.writers.csv(data)], {type: "text/plain;charset=utf-8"}), search.toLowerCase() + "-results-" + query + "-first" + data.length + ".csv");
+        saveAs(
+          new Blob([artoo.writers.csv(data)],
+                   {type: "text/plain;charset=utf-8"}),
+          search.toLowerCase() + "-results-" + query + "-first" + data.length + ".csv"
+        );
       });
 
     });
