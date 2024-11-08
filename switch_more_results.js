@@ -2,16 +2,16 @@
   var loc = window.location,
     href = loc.href,
     styles = [
-      '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 400px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: Arial, sans-serif;}',
-      '#BMoverlay h1 {display: block; font-size: 25px; font-weight: bold; margin: 0px 70px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline;}',
-      '#BMoverlay #BMlogo {position: absolute; top: 10px; right: 10px; width: 64px; height: 64px;}',
-      '#BMoverlay h2 {display: block; font-size: 20px; font-weight: bold; margin: 0px 70px 25px 0px; padding: 0; line-height: 22px;}',
-      '#BMoverlay p {display: block; font-size: 16px; font-family: Arial, sans-serif; margin: 12px 0; padding: 0; line-height: 16px;}',
-      '#BMoverlay select {margin: 0 0 0 10px; padding: 0; height: 20px; color: unset; border-color: black;}',
-      '#BMoverlay .BMurl {width: 95%; font-family: monospace;}',
-      '#BMoverlay .BMredirect {font-size: 14px;}',
-      '#BMoverlay #BMfooter {margin: 15px 0 0 0; font-size: 13px;}',
-      '#BMoverlay #BMfooter a, #BMoverlay #BMfooter a:visited {color: black; text-decoration: underline;}'
+      '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 400px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
+      '#BMoverlay h1 {display: block; font-size: 23px; font-weight: bold; margin: 0px 70px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline; font-family: monospace; box-sizing: content-box;}',
+      '#BMoverlay #BMlogo {position: absolute; top: 8px; right: 8px; width: 64px; height: 64px;}',
+      '#BMoverlay h2 {display: block; font-size: 17px; font-weight: bold; margin: 0px 70px 25px 0px; padding: 0; line-height: 22px; font-family: monospace;}',
+      '#BMoverlay p {display: block; font-size: 14px; font-family: monospace; margin: 12px 0; padding: 0; line-height: 16px;}',
+      '#BMoverlay select {margin: 0 0 0 10px; padding: 0 5px; height: 20px; color: unset; border: 1px solid #555; border-radius: 1px; font-family: monospace;}',
+      '#BMoverlay .BMurl {width: 95%; font-family: monospace; font-size: 12px;}',
+      '#BMoverlay .BMredirect {font-size: 14px; font-family: monospace; padding: 5px 10px; font-weight: bold;}',
+      '#BMoverlay #BMfooter {margin: 15px 0 0 0; font-size: 10px; color: #555;}',
+      '#BMoverlay #BMfooter a, #BMoverlay #BMfooter a:visited {color: black; text-decoration: underline; color: #555;}'
     ];
 
   const populateSelect = function(selector, values, curVal){
@@ -41,7 +41,7 @@
         '</p>'
       : '') +
       '<p>You will be redirected to the following url:</p>' +
-      '<textarea class="BMurl" disabled="disabled" rows="3" />' +
+      '<textarea class="BMurl" disabled="disabled" rows="2" />' +
       '<p>Use again SearchEnginesBookmarklet then from that page in order to extract its results.</p>' +
       '<input class="BMredirect" type="button" value="Redirect me!"></input>' +
       '<p id="BMfooter">Powered by <a target="_blank" href="https://medialab.sciencespo.fr/">médialab Sciences Po</a> &ndash; Discover more <a target="_blank" href="https://medialab.sciencespo.fr/en/tools/">médialab tools</a>!</p>' +

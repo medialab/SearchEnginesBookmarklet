@@ -13,9 +13,14 @@
         timeGaps = {},
         query, hlang, total, start, search,
         styles = [
-          '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 250px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
-          '#BMoverlay h2 {display: block; font-size: 20px; font-family: Arial, sans-serif; font-weight: bold; margin: 0px 0px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline;}',
-          '#BMoverlay input[type="button"] {margin: 3px;}'
+          '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 400px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
+          '#BMoverlay h1 {display: block; font-size: 23px; font-weight: bold; margin: 0px 70px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline; font-family: monospace; box-sizing: content-box;}',
+          '#BMoverlay #BMlogo {position: absolute; top: 8px; right: 8px; width: 64px; height: 64px;}',
+          '#BMoverlay h2 {display: block; font-size: 17px; font-weight: bold; margin: 0px 70px 25px 0px; padding: 0; line-height: 22px; font-family: monospace;}',
+          '#BMoverlay p {display: block; font-size: 14px; font-family: monospace; margin: 12px 0; padding: 0; line-height: 16px;}',
+          '#BMoverlay input[type="button"] {margin: 5px 0; padding: 5px 10px; font-family: monospace; font-size: 12px; font-weight: bold; border: 1px solid #555; border-radius: 1px; line-height: 14px;}',
+          '#BMoverlay #BMfooter {margin: 15px 0 0 0; font-size: 10px; color: #555;}',
+          '#BMoverlay #BMfooter a, #BMoverlay #BMfooter a:visited {color: black; text-decoration: underline; color: #555;}'
         ];
 
       if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
@@ -189,15 +194,18 @@
       artoo.$('body').append(
         '<style>' + styles.join('\n') + '</style>' +
         '<div id="BMoverlay">' +
+          '<h1>SearchEngineBookmarklets</h1>' +
+          '<img id="BMlogo" src="https://medialab.github.io/SearchEnginesBookmarklet/images/duckduckgo-google-bing-baidu-256.png" alt="SEB logo" />' +
           '<h2>Extract ' + search + ' results</h2>' +
-          '<p>Search for "<b>' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>"<br/>' +
-            'page ' + page + ' (with up to ' + total + ' urls per page)</p>' +
+          '<p>Search for «&nbsp;<b>' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>&nbsp;»<br/>' +
+            'page ' + page + ' (with up to ' + total + ' results per page)</p>' +
           '<p class="BMpageresults"></p>' +
           '<p class="BMoldresults"></p>' +
-          '<input class="BMcontinue" type="button" value="Keep existing results & continue to the next page"></input><br/>' +
-          '<input class="BMdownload" type="button"></input><br/>' +
+          '<input class="BMcontinue" type="button" value="Keep existing results & continue to the next page"></input>' +
+          '<input class="BMdownload" type="button"></input>' +
           '<input class="BMdownloadAll" type="button"></input>' +
-          '<input class="BMreset" type="button" value="Clear existing results from cache"></input>' +
+          '<input class="BMreset" type="button" value="Clear results previously kept for this query"></input>' +
+          '<p id="BMfooter">Powered by <a target="_blank" href="https://medialab.sciencespo.fr/">médialab Sciences Po</a> &ndash; Discover more <a target="_blank" href="https://medialab.sciencespo.fr/en/tools/">médialab tools</a>!</p>' +
         '</div>'
       );
 
@@ -212,7 +220,7 @@
           fulldata = pastdata;
           artoo.$('#BMoverlay .BMpageresults').html('no new result in this page');
         }
-        artoo.$('#BMoverlay .BMdownloadAll').val('Download complete CSV with all ' + fulldata.length + ' urls');
+        artoo.$('#BMoverlay .BMdownloadAll').val('Download complete CSV with all ' + fulldata.length + ' results');
         if (pastdata.length) {
           artoo.$('#BMoverlay .BMoldresults').html('(already ' + pastdata.length + ' results collected from page' + (~donepages.search(/\-/) ? 's ' : ' ') + donepages + ')').show();
           artoo.$('#BMoverlay .BMdownloadAll, #BMoverlay .BMreset').show();
@@ -220,7 +228,7 @@
         } else {
           artoo.$('#BMoverlay .BMoldresults').hide();
           artoo.$('#BMoverlay .BMdownloadAll, #BMoverlay .BMreset').hide();
-          artoo.$('#BMoverlay .BMdownload').val('Download CSV with ' + newdata.length + ' urls');
+          artoo.$('#BMoverlay .BMdownload').val('Download CSV with ' + newdata.length + ' results');
         }
       };
       refresh();

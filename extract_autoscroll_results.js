@@ -14,13 +14,18 @@
         hlang = navigator.language,
         search = ~href.search(/:\/\/([^.]+\.)?qwant\.[^/]+\//) ? 'Qwant' : 'DuckDuckGo',
         styles = [
-          '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; height: 300px; width: 330px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 20px; text-align: center;}',
-          '#BMoverlay h2 {display: block; font-size: 20px; font-family: Arial, sans-serif; font-weight: bold; margin: 0px 0px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline;}',
-          '#BMoverlay input[type="button"] {margin: 3px;}',
-          '#BMnumber {width: 50px}',
+          '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 400px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
+          '#BMoverlay h1 {display: block; font-size: 23px; font-weight: bold; margin: 0px 70px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline; font-family: monospace; box-sizing: content-box;}',
+          '#BMoverlay #BMlogo {position: absolute; top: 8px; right: 8px; width: 64px; height: 64px;}',
+          '#BMoverlay h2 {display: block; font-size: 17px; font-weight: bold; margin: 0px 70px 25px 0px; padding: 0; line-height: 22px; font-family: monospace;}',
+          '#BMoverlay p {display: block; font-size: 14px; font-family: monospace; margin: 12px 0; padding: 0; line-height: 16px;}',
+          '#BMoverlay #BMnumber {margin: 0 0 0 10px; padding: 0 5px; height: 20px; color: unset; border: 1px solid #555; border-radius: 1px; font-family: monospace; width:45px; box-sizing: content-box; font-size: 14px;}',
+          '#BMoverlay input[type="button"] {margin: 5px 0; padding: 5px 10px; font-family: monospace; font-size: 12px; font-weight: bold; border: 1px solid #555; border-radius: 1px; line-height: 14px;}',
           '#BMprogressContainer {background-color: #f3f3f3; border-radius: 5px; width: 100%; height: 20px; margin-top: 10px;}',
           '#BMprogressBar {height: 100%; width: 0; background-color: #4caf50; border-radius: 5px;}',
-          '#BMprogressText {margin-top: 5px;}'
+          '#BMprogressText {margin-top: 5px;}',
+          '#BMoverlay #BMfooter {margin: 15px 0 0 0; font-size: 10px; color: #555;}',
+          '#BMoverlay #BMfooter a, #BMoverlay #BMfooter a:visited {color: black; text-decoration: underline; color: #555;}'
         ];
 
       Object.keys(translations).forEach(function(k) {
@@ -149,14 +154,21 @@
       artoo.$('body').append(
         '<style>' + styles.join('\n') + '</style>' +
         '<div id="BMoverlay">' +
+          '<h1>SearchEngineBookmarklets</h1>' +
+          '<img id="BMlogo" src="https://medialab.github.io/SearchEnginesBookmarklet/images/duckduckgo-google-bing-baidu-256.png" alt="SEB logo" />' +
           '<h2>Extract ' + search + ' results</h2>' +
-          '<p>Maximum number of results desired:</p>' +
-          '<input type="number" id="BMnumber" value="100"></br></br>' +
-          '<input class="BMdownload" type="button" value="Begin scraping" required></input><br/>' +
+          '<p>Search for «&nbsp;<b>' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>&nbsp;»</p>' +
+          '<p>How many results to collect at most?' +
+            '<input type="number" id="BMnumber" value="' + (search === 'Qwant' ? 50 : 100) + '"></input>' +
+          '</p>' +
+          '<p>The page will be automatically expanded until reaching desired number of results.<br/>' +
+             'You might need to validate some CAPTCHA.</p>' +
+          '<input class="BMdownload" type="button" value="Start download"></input>' +
           '<div id="BMprogressContainer">' +
             '<div id="BMprogressBar"></div>' +
           '</div>' +
-          '<p id="BMprogressText">Collected 0 of 0 results</p>' +
+          '<p id="BMprogressText"></p>' +
+          '<p id="BMfooter">Powered by <a target="_blank" href="https://medialab.sciencespo.fr/">médialab Sciences Po</a> &ndash; Discover more <a target="_blank" href="https://medialab.sciencespo.fr/en/tools/">médialab tools</a>!</p>' +
         '</div>'
       );
 
