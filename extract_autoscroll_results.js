@@ -145,8 +145,8 @@
           }
 
           results.push({
-            title: title,
-            link: link,
+            name: title,
+            url: link,
             description: description,
             date: date
           });

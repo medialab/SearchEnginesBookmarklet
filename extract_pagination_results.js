@@ -143,8 +143,8 @@
           }
 
           results.push({
-            title: title,
-            link: link,
+            name: title,
+            url: link,
             description: desc,
             date: relative_date_converter(date.trim())
           });
