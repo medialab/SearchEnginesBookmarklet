@@ -11,7 +11,7 @@
         },
         timeGaps = {},
         query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
-        hlang = navigator.language,
+        hlang = navigator.language.replace(/-.*$/, ''),
         search = ~href.search(/:\/\/([^.]+\.)?qwant\.[^/]+\//) ? 'Qwant' : 'DuckDuckGo',
         styles = [
           '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 400px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
@@ -39,38 +39,44 @@
         config._d = new Date(config._i);
       };
       function relative_date_converter(date){
+        let res;
         if (!date) return;
-        try {
-          if (/^\d{4}年\d{1,2}月\d{1,2}日$/.test(date)) {
-            date = moment(date, "YYYY年MM月DD日").format("YYYY-MM-DD");
+        if (/^\d{4}年\d{1,2}月\d{1,2}日$/.test(date)) {
+          res = moment(date, "YYYY年MM月DD日").format("YYYY-MM-DD");
+        } else {
+          res = date
+            .replace(/\bf[eé]vr?(ier|\.)?\b/, "feb")
+            .replace(/\bavr(il|\.)?\b/, "apr")
+            .replace(/\bmai\b/, "may")
+            .replace(/\bjuin\b/, "jun")
+            .replace(/\bjuil(let|\.)?\b/, "jul")
+            .replace(/\bao[uû](t|\.)?\b/, "aug")
+            .replace(/\bdéc(embre|\.)?\b/, "dec");
+          res = moment(res).format("YYYY-MM-DD");
+        }
+        if (!/\d{4}/.test(res)) {
+          var parsed;
+          if (/(\d+)天前/.test(date)) {
+            parsed = /(\d+)\s*天前/.exec(date);
+            res = moment().subtract(parsed[1], 'days').toISOString().slice(0, 10);
+          } else if (/(\d+)小时前/.test(date)) {
+            parsed = /(\d+)\s*小时前/.exec(date);
+            res = moment().subtract(parsed[1], 'hours').toISOString().slice(0, 10);
+          } else if (/昨天(\d+:\d+)/.test(date)) {
+            parsed = /昨天(\d+:\d+)/.exec(date);
+            res = moment().subtract(1, 'days').format("YYYY-MM-DD") + ' ' + parsed[1];
           } else {
-            date = moment(date).toISOString().slice(0, 10);
-          }
-        } catch (e) {
-          if (!/\d{4}/.test(date)) {
-            var parsed;
-            if (/(\d+)天前/.test(date)) {
-              parsed = /(\d+)\s*天前/.exec(date);
-              date = moment().subtract(parsed[1], 'days').toISOString().slice(0, 10);
-            } else if (/(\d+)小时前/.test(date)) {
-              parsed = /(\d+)\s*小时前/.exec(date);
-              date = moment().subtract(parsed[1], 'hours').toISOString().slice(0, 10);
-            } else if (/昨天(\d+:\d+)/.test(date)) {
-              parsed = /昨天(\d+:\d+)/.exec(date);
-              date = moment().subtract(1, 'days').format("YYYY-MM-DD") + ' ' + parsed[1];
-            } else {
-              parsed = /(^|\s)(\d+)\s(\w+)(\s|$)/.exec(date);
-              if (parsed) {
-                var num = parsed[2],
-                  duration = timeGaps[parsed[3]];
-                if (duration) {
-                  date = moment().subtract(num, duration).toISOString().slice(0, 10);
-                }
+            parsed = /(^|\s)(\d+)\s(\w+)(\s|$)/.exec(date);
+            if (parsed) {
+              var num = parsed[2],
+                duration = timeGaps[parsed[3]];
+              if (duration) {
+                res = moment().subtract(num, duration).toISOString().slice(0, 10);
               }
             }
           }
         }
-        return date;
+        return res || date;
       }
 
       function moreResult(href){

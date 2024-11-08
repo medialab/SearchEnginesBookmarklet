@@ -25,14 +25,14 @@
 
       if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
         query = href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1');
-        hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.substr(0,2) : 'fr'));
+        hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.replace(/-.*$/, '') : 'fr'));
         total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100);
         start = (~href.search(/start=/) ? parseInt(href.replace(/^.*[#?&]start=(\d+).*$/, '$1')) : 0);
         search = "Google";
 
       } else if(~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//)){
         query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
-        hlang = (~href.search(/setlang=/) ? href.replace(/^.*[#?&]setlang=([^#?&]+).*$/, '$1') : navigator.language);
+        hlang = (~href.search(/setlang=/) ? href.replace(/^.*[#?&]setlang=([^#?&]+).*$/, '$1') : navigator.language.replace(/-.*$/, ''));
         total = (~href.search(/count=/) ? parseInt(href.replace(/^.*[#?&]count=(\d+).*$/, '$1')) : 30);
         start = (~href.search(/first=/) ? parseInt(href.replace(/^.*[#?&]first=(\d+).*$/, '$1')) : 0);
         search = "Bing";
@@ -56,38 +56,44 @@
         config._d = new Date(config._i);
       };
       function relative_date_converter(date){
+        let res;
         if (!date) return;
-        try {
-          if (/^\d{4}年\d{1,2}月\d{1,2}日$/.test(date)) {
-            date = moment(date, "YYYY年MM月DD日").format("YYYY-MM-DD");
+        if (/^\d{4}年\d{1,2}月\d{1,2}日$/.test(date)) {
+          res = moment(date, "YYYY年MM月DD日").format("YYYY-MM-DD");
+        } else {
+          res = date
+            .replace(/\bf[eé]vr?(ier|\.)?\b/, "feb")
+            .replace(/\bavr(il|\.)?\b/, "apr")
+            .replace(/\bmai\b/, "may")
+            .replace(/\bjuin\b/, "jun")
+            .replace(/\bjuil(let|\.)?\b/, "jul")
+            .replace(/\bao[uû](t|\.)?\b/, "aug")
+            .replace(/\bdéc(embre|\.)?\b/, "dec");
+          res = moment(res).format("YYYY-MM-DD");
+        }
+        if (!/\d{4}/.test(res)) {
+          var parsed;
+          if (/(\d+)天前/.test(date)) {
+            parsed = /(\d+)\s*天前/.exec(date);
+            res = moment().subtract(parsed[1], 'days').toISOString().slice(0, 10);
+          } else if (/(\d+)小时前/.test(date)) {
+            parsed = /(\d+)\s*小时前/.exec(date);
+            res = moment().subtract(parsed[1], 'hours').toISOString().slice(0, 10);
+          } else if (/昨天(\d+:\d+)/.test(date)) {
+            parsed = /昨天(\d+:\d+)/.exec(date);
+            res = moment().subtract(1, 'days').format("YYYY-MM-DD") + ' ' + parsed[1];
           } else {
-            date = moment(date).toISOString().slice(0, 10);
-          }
-        } catch (e) {
-          if (!/\d{4}/.test(date)) {
-            var parsed;
-            if (/(\d+)天前/.test(date)) {
-              parsed = /(\d+)\s*天前/.exec(date);
-              date = moment().subtract(parsed[1], 'days').toISOString().slice(0, 10);
-            } else if (/(\d+)小时前/.test(date)) {
-              parsed = /(\d+)\s*小时前/.exec(date);
-              date = moment().subtract(parsed[1], 'hours').toISOString().slice(0, 10);
-            } else if (/昨天(\d+:\d+)/.test(date)) {
-              parsed = /昨天(\d+:\d+)/.exec(date);
-              date = moment().subtract(1, 'days').format("YYYY-MM-DD") + ' ' + parsed[1];
-            } else {
-              parsed = /(^|\s)(\d+)\s(\w+)(\s|$)/.exec(date);
-              if (parsed) {
-                var num = parsed[2],
-                  duration = timeGaps[parsed[3]];
-                if (duration) {
-                  date = moment().subtract(num, duration).toISOString().slice(0, 10);
-                }
+            parsed = /(^|\s)(\d+)\s(\w+)(\s|$)/.exec(date);
+            if (parsed) {
+              var num = parsed[2],
+                duration = timeGaps[parsed[3]];
+              if (duration) {
+                res = moment().subtract(num, duration).toISOString().slice(0, 10);
               }
             }
           }
         }
-        return date;
+        return res || date;
       }
 
       var pastdata, fulldata, newdata,
