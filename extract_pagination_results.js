@@ -86,7 +86,7 @@
             parsed = /昨天(\d+:\d+)/.exec(date);
             res = moment().subtract(1, 'days').format("YYYY-MM-DD") + ' ' + parsed[1];
           } else {
-            parsed = /(^|\s)(\d+)\s(\w+)(\s|$)/.exec(date);
+            parsed = /(^|\s)(\d+)\s(\w+)(\s|$)/.exec(date.replace(/^Auj\.?/, "il y a 0 jours"));
             if (parsed) {
               var num = parsed[2],
                 duration = timeGaps[parsed[3]];
