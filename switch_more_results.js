@@ -26,7 +26,9 @@
     });
   };
 
-  if (~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)) {
+  if (~href.search(/:\/\/([^.]+\.)?scholar\.google\.[^/]+\//)) {
+    search = 'Scholar';
+  } else if (~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)) {
     search = 'Google';
   } else if(~href.search(/:\/\/([^.]+\.)?baidu\.[^/]+\//)) {
     search = 'Baidu';
@@ -92,6 +94,19 @@
         artoo.$('#BMoverlay .BMurl').val(loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&first=' + first + '&count=' + artoo.$('#BMoverlay .BMresults').val() + '&FORM=PERE' + form);
       };
     populateSelect('#BMoverlay .BMresults', results, count);
+
+  // Scholar Google
+  } else if (search === 'Scholar') {
+    var query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
+    hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.replace(/-.*$/, '') : 'fr')),
+    languages = ['en', 'fr', 'it', 'es', 'pt', 'de', 'nl', 'ru', 'ar', 'fa', 'zh', 'ja', 'ko'],
+    total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 20),
+    results = [10, 20],
+    buildUrl = function(){
+      artoo.$('#BMoverlay .BMurl').val(loc.protocol + "//" + loc.hostname + "/scholar?q=" + query + '&hl=' + artoo.$('#BMoverlay .BMlang').val() + '&num=' + artoo.$('#BMoverlay .BMresults').val() + '&start=0');
+    };
+  populateSelect('#BMoverlay .BMlang', languages, hlang);
+  populateSelect('#BMoverlay .BMresults', results, total);
   }
 
   buildUrl();
