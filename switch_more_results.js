@@ -46,7 +46,7 @@
       '<p>How many results per page?' +
         '<select class="BMresults"></select>' +
       '</p>' +
-      (search === 'Google'
+      (search === 'Google' || search === 'Scholar'
       ? '<p>Which language?' +
            '<select class="BMlang"></select>' +
         '</p>'
@@ -59,15 +59,19 @@
     '</div>'
   );
 
-  // Google
-  if (search === 'Google') {
+  // Google and Scholar Google
+  if (search === 'Google' || search === 'Scholar') {
     var query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
       hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.replace(/-.*$/, '') : 'fr')),
       total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100),
       languages = ['en', 'fr', 'it', 'es', 'pt', 'de', 'nl', 'ru', 'ar', 'fa', 'zh', 'ja', 'ko'],
       results = [10, 20, 50, 100],
       buildUrl = function(){
-        artoo.$('#BMoverlay .BMurl').val(loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&hl=' + artoo.$('#BMoverlay .BMlang').val() + '&num=' + artoo.$('#BMoverlay .BMresults').val() + '&start=0');
+        if(search === 'Google'){
+          artoo.$('#BMoverlay .BMurl').val(loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&hl=' + artoo.$('#BMoverlay .BMlang').val() + '&num=' + artoo.$('#BMoverlay .BMresults').val() + '&start=0');
+        } else{
+          artoo.$('#BMoverlay .BMurl').val(loc.protocol + "//" + loc.hostname + "/scholar?q=" + query + '&hl=' + artoo.$('#BMoverlay .BMlang').val() + '&num=' + artoo.$('#BMoverlay .BMresults').val() + '&start=0');
+        }
       };
     populateSelect('#BMoverlay .BMlang', languages, hlang);
     populateSelect('#BMoverlay .BMresults', results, total);
@@ -94,20 +98,7 @@
         artoo.$('#BMoverlay .BMurl').val(loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&first=' + first + '&count=' + artoo.$('#BMoverlay .BMresults').val() + '&FORM=PERE' + form);
       };
     populateSelect('#BMoverlay .BMresults', results, count);
-
-  // Scholar Google
-  } else if (search === 'Scholar') {
-    var query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
-    hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.replace(/-.*$/, '') : 'fr')),
-    languages = ['en', 'fr', 'it', 'es', 'pt', 'de', 'nl', 'ru', 'ar', 'fa', 'zh', 'ja', 'ko'],
-    total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 20),
-    results = [10, 20],
-    buildUrl = function(){
-      artoo.$('#BMoverlay .BMurl').val(loc.protocol + "//" + loc.hostname + "/scholar?q=" + query + '&hl=' + artoo.$('#BMoverlay .BMlang').val() + '&num=' + artoo.$('#BMoverlay .BMresults').val() + '&start=0');
-    };
-  populateSelect('#BMoverlay .BMlang', languages, hlang);
-  populateSelect('#BMoverlay .BMresults', results, total);
-  }
+    }
 
   buildUrl();
 
