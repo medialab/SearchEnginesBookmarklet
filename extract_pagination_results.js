@@ -23,7 +23,15 @@
           '#BMoverlay #BMfooter a, #BMoverlay #BMfooter a:visited {color: black; text-decoration: underline; color: #555;}'
         ];
 
-      if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
+      if(~href.search(/:\/\/([^.]+\.)?scholar\.google\.[^/]+\//)){
+        query = href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1');
+        hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.replace(/-.*$/, '') : 'fr'));
+        total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 20);
+        start = (~href.search(/start=/) ? parseInt(href.replace(/^.*[#?&]start=(\d+).*$/, '$1')) : 0);
+        search = "Scholar";
+        nextPageLink = '[class="gs_ico gs_ico_nav_next"]';
+
+      } else if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
         query = href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1');
         hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.replace(/-.*$/, '') : 'fr'));
         total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100);
@@ -114,7 +122,7 @@
           fulldata = newdata;
         };
 
-      function scrape(href) {
+      function scrape() {
         let results = [];
         var link, title, desc, date,
           scrap = document.querySelectorAll(
@@ -162,6 +170,36 @@
         return results;
       }
 
+      function scrape_scholar(){
+        let results = [],
+        scrap = document.querySelectorAll('div[class="gs_r gs_or gs_scl"]');
+        for (let i = 0; i < scrap.length; i++) {
+          let ele = scrap[i],
+          name = ele.querySelector('h3.gs_rt').textContent,
+          try_link = ele.querySelector('h3.gs_rt a'),
+          link = try_link ? try_link.href : null,
+          try_desc = ele.querySelector('div.gs_rs'),
+          desc = try_desc ? try_desc.textContent : null,
+          infos = ele.querySelector('div.gs_a').textContent.split('-'),
+          authors = infos[0],
+          n_quote = ele.querySelector('div[class="gs_fl gs_flb"] a:nth-of-type(3)').textContent;
+          if(/\d+/.test(n_quote)){
+            n_quote = n_quote.match(/\d+/)[0];
+          } else {
+            n_quote = null;
+          }
+
+          results.push({
+            name: name,
+            url: link,
+            description: desc,
+            authors: authors,
+            n_quote: n_quote
+          });
+        } 
+        return results;
+      }
+
       // Google results
       if (search === 'Google') {
         newdata = artoo.scrape("#rso .g > div[data-hveid], #rso .g[data-hveid], #rso .g > g-section-with-header > div > div, div[data-async-context] .g[data-hveid]", {
@@ -192,8 +230,10 @@
             }
           }
         });
+      } else if (search === 'Scholar'){
+        newdata = scrape_scholar();
       } else {
-        newdata = scrape(href)
+        newdata = scrape();
       }
 
       artoo.store.concatTo = function(key, arr) {
@@ -261,6 +301,8 @@
           window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&count=' + tot + '&first=' + st + '&FORM=PERE';
         } else if (search === 'Baidu') {
           window.location.href = loc.protocol + "//" + loc.hostname + "/s?wd=" + query + '&rn=' + tot + '&pn=' + st;
+        } else if (search === 'Scholar') {
+          window.location.href = loc.protocol + "//" + loc.hostname + "/scholar?q=" + query + '&hl=' + hlang + "&num=" + tot + "&start=" + st;
         }
       };
 
