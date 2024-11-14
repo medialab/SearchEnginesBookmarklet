@@ -23,22 +23,20 @@
           '#BMoverlay #BMfooter a, #BMoverlay #BMfooter a:visited {color: black; text-decoration: underline; color: #555;}'
         ];
 
-      if(~href.search(/:\/\/([^.]+\.)?scholar\.google\.[^/]+\//)){
+
+      if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
         query = href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1');
         hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.replace(/-.*$/, '') : 'fr'));
-        total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 20);
         start = (~href.search(/start=/) ? parseInt(href.replace(/^.*[#?&]start=(\d+).*$/, '$1')) : 0);
-        search = "Scholar";
-        nextPageLink = '[class="gs_ico gs_ico_nav_next"]';
-
-      } else if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
-        query = href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1');
-        hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.replace(/-.*$/, '') : 'fr'));
-        total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100);
-        start = (~href.search(/start=/) ? parseInt(href.replace(/^.*[#?&]start=(\d+).*$/, '$1')) : 0);
-        search = "Google";
-        nextPageLink = "#pnnext";
-
+        if(~href.search(/:\/\/([^.]+\.)?scholar\.google\.[^/]+\//)){
+          total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 20);
+          search = "Scholar";
+          nextPageLink = '[class="gs_ico gs_ico_nav_next"]';
+        } else {
+          total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100);
+          search = "Google";
+          nextPageLink = "#pnnext";
+        }
       } else if(~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//)){
         query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
         hlang = (~href.search(/setlang=/) ? href.replace(/^.*[#?&]setlang=([^#?&]+).*$/, '$1') : navigator.language.replace(/-.*$/, ''));
