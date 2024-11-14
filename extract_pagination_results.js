@@ -31,7 +31,7 @@
         if(~href.search(/:\/\/([^.]+\.)?scholar\.google\.[^/]+\//)){
           total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 20);
           search = "Scholar";
-          nextPageLink = '[class="gs_ico gs_ico_nav_next"]';
+          nextPageLink = '.gs_ico.gs_ico_nav_next';
         } else {
           total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100);
           search = "Google";
