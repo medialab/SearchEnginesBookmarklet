@@ -135,10 +135,10 @@
           // Bing results
           if (search === 'Bing') {
             let linkElement = ele.querySelector('div[class="b_attribution"]');
-            link = linkElement ? linkElement.textContent : null;
+            link = linkElement ? linkElement.textContent : "";
             title = ele.querySelector('h2 a[target="_blank"]').textContent;
             let descriptionElement = ele.querySelector('div p');
-            desc = descriptionElement ? descriptionElement.textContent : null;
+            desc = descriptionElement ? descriptionElement.textContent : "";
             let try_date = ele.querySelector('span[class="news_dt"]');
             date = try_date ? try_date : "";
             if (date) date = date.textContent;
@@ -146,10 +146,10 @@
           // Baidu results
           } else if (search === 'Baidu') {
             let titleElement = ele.querySelector('div>div>h3>a');
-            title = titleElement ? titleElement.textContent : null;
+            title = titleElement ? titleElement.textContent : "";
             link = ele.getAttribute('mu');
             let descriptionElement = ele.querySelector('span[class*="content"]');
-            desc = descriptionElement ? descriptionElement.textContent : null;
+            desc = descriptionElement ? descriptionElement.textContent : "";
             let date_list = ele.querySelectorAll('[class*="c-color-gray2"]');
             if (date_list.length > 0) {
               date_list.length > 1 ? date = date_list[0].textContent.split(' ').at(-1) : date = date_list[0].textContent;
@@ -175,16 +175,16 @@
           let ele = scrap[i],
           name = ele.querySelector('h3.gs_rt').textContent,
           try_link = ele.querySelector('h3.gs_rt a'),
-          link = try_link ? try_link.href : null,
+          link = try_link ? try_link.href : "",
           try_desc = ele.querySelector('div.gs_rs'),
-          desc = try_desc ? try_desc.textContent : null,
+          desc = try_desc ? try_desc.textContent : "",
           infos = ele.querySelector('div.gs_a').textContent.split('-'),
           authors = infos[0],
           n_quote = ele.querySelector('div[class="gs_fl gs_flb"] a:nth-of-type(3)').textContent;
           if(/\d+/.test(n_quote)){
             n_quote = n_quote.match(/\d+/)[0];
           } else {
-            n_quote = null;
+            n_quote = "";
           }
 
           results.push({

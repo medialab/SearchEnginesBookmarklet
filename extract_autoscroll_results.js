@@ -132,10 +132,10 @@
           // DuckDuckGo results
           if (search === 'DuckDuckGo') {
             let titleElement = ele.querySelector('h2 a');
-            title = titleElement ? titleElement.textContent : null;
-            link = titleElement ? titleElement.href : null;
+            title = titleElement ? titleElement.textContent : "";
+            link = titleElement ? titleElement.href : "";
             let descriptionElement = ele.querySelector('article>div>div>div>span');
-            description = descriptionElement ? descriptionElement.textContent : null;
+            description = descriptionElement ? descriptionElement.textContent : "";
             let try_date = descriptionElement.querySelector('span>span[class]');
             date = try_date ? relative_date_converter(try_date.textContent) : "";
 
