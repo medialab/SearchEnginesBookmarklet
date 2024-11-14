@@ -313,7 +313,7 @@
         saveAs(
           new Blob([artoo.writers.csv(newdata)],
                    {type: "text/plain;charset=utf-8"}),
-          search + "-results-" + hlang + "-" + query + "-page" + page + ".csv"
+          search.toLowerCase() + "-results-" + hlang + "-" + query + "-page" + page + ".csv"
         );
       });
 
@@ -321,7 +321,7 @@
         saveAs(
           new Blob([artoo.writers.csv(fulldata)],
                    {type: "text/plain;charset=utf-8"}),
-          search + "-results-" + hlang + "-" + query + "-pages" + artoo.store(storage + '-pages').sort().join('-') + ".csv"
+          search.toLowerCase() + "-results-" + hlang + "-" + query + "-pages" + artoo.store(storage + '-pages').sort().join('-') + ".csv"
         );
       });
 

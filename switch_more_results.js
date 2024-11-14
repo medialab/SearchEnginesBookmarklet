@@ -67,11 +67,7 @@
       languages = ['en', 'fr', 'it', 'es', 'pt', 'de', 'nl', 'ru', 'ar', 'fa', 'zh', 'ja', 'ko'],
       results = search === 'Google' ? [10, 20, 50, 100] : [10, 20],
       buildUrl = function(){
-        if(search === 'Google'){
-          artoo.$('#BMoverlay .BMurl').val(loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&hl=' + artoo.$('#BMoverlay .BMlang').val() + '&num=' + artoo.$('#BMoverlay .BMresults').val() + '&start=0');
-        } else{
-          artoo.$('#BMoverlay .BMurl').val(loc.protocol + "//" + loc.hostname + "/scholar?q=" + query + '&hl=' + artoo.$('#BMoverlay .BMlang').val() + '&num=' + artoo.$('#BMoverlay .BMresults').val() + '&start=0');
-        }
+        artoo.$('#BMoverlay .BMurl').val(loc.protocol + "//" + loc.hostname + "/" + (search === 'Google' ? 'search' : 'scholar') + '?q=' + query + '&hl=' + artoo.$('#BMoverlay .BMlang').val() + '&num=' + artoo.$('#BMoverlay .BMresults').val() + '&start=0');
       };
     populateSelect('#BMoverlay .BMlang', languages, hlang);
     populateSelect('#BMoverlay .BMresults', results, total);
