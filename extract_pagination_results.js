@@ -168,35 +168,49 @@
         return results;
       }
 
-      function scrape_scholar(){
-        let results = [],
-        scrap = document.querySelectorAll('div[class="gs_r gs_or gs_scl"]');
+      function scrape_scholar() {
+        let results = [];
+        let scrap = document.querySelectorAll('div[class="gs_r gs_or gs_scl"]');
+      
         for (let i = 0; i < scrap.length; i++) {
-          let ele = scrap[i],
-          name = ele.querySelector('h3.gs_rt').textContent,
-          try_link = ele.querySelector('h3.gs_rt a'),
-          link = try_link ? try_link.href : "",
-          try_desc = ele.querySelector('div.gs_rs'),
-          desc = try_desc ? try_desc.textContent : "",
-          infos = ele.querySelector('div.gs_a').textContent.split('-'),
-          authors = infos[0],
-          n_quote = ele.querySelector('div[class="gs_fl gs_flb"] a:nth-of-type(3)').textContent;
-          if(/\d+/.test(n_quote)){
+          let ele = scrap[i];
+          let try_type = ele.querySelector('span.gs_ct1');
+          let type = try_type ? try_type.textContent : null;
+      
+          let nameElement = ele.querySelector('h3.gs_rt');
+          let spansToRemove = nameElement.querySelectorAll('[class*="gs_c"]');
+          spansToRemove.forEach(span => span.remove());
+          let name = nameElement.textContent;
+      
+          let try_link = ele.querySelector('h3.gs_rt a');
+          let link = try_link ? try_link.href : "";
+      
+          let try_desc = ele.querySelector('div.gs_rs');
+          let desc = try_desc ? try_desc.textContent : "";
+      
+          let infos = ele.querySelector('div.gs_a').textContent.split('-');
+          let authors = infos[0];
+      
+          let n_quote = ele.querySelector('div[class="gs_fl gs_flb"] a:nth-of-type(3)').textContent;
+          if (/\d+/.test(n_quote)) {
             n_quote = n_quote.match(/\d+/)[0];
           } else {
             n_quote = "";
           }
-
+      
           results.push({
-            name: name,
-            url: link,
-            description: desc,
-            authors: authors,
-            n_quote: n_quote
+            type,
+            name,
+            link,
+            desc,
+            authors,
+            n_quote
           });
-        } 
+        }
+      
         return results;
       }
+      
 
       // Google results
       if (search === 'Google') {
