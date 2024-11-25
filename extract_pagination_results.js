@@ -175,24 +175,24 @@
         for (let i = 0; i < scrap.length; i++) {
           let ele = scrap[i];
           let try_type = ele.querySelector('span.gs_ct1');
-          let type = try_type ? try_type.textContent : null;
+          let type = try_type ? try_type.textContent.replace(/[\[\]]/g, '') : "";
       
           let nameElement = ele.querySelector('h3.gs_rt');
-          let spansToRemove = nameElement.querySelectorAll('[class*="gs_c"]');
+          let nameElementClone = nameElement.cloneNode(true);
+          let spansToRemove = nameElementClone.querySelectorAll('[class*="gs_c"]');
           spansToRemove.forEach(span => span.remove());
-          let name = nameElement.textContent;
+          let name = nameElementClone.textContent.trim();
       
           let try_link = ele.querySelector('h3.gs_rt a');
           let link = try_link ? try_link.href : "";
       
           let try_desc = ele.querySelector('div.gs_rs');
-          let desc = try_desc ? try_desc.textContent.replace(/(\r\n|\n|\r)/gm, "") : "";
+          let desc = try_desc ? try_desc.textContent.replace(/[\r\n]+/gm, "") : "";
           let infos = ele.querySelector('div.gs_a').textContent;
           let infos_tab = infos.split(/[\u00A0 ]-/);
           let try_date = /(19|20)\d{2}/.exec(infos);
           let date = try_date ? try_date[0] : "";
-          console.log(date);
-          let journal = infos_tab.at(-1);
+          let journal = infos_tab.at(-1).trim();
           let authors = infos_tab[0];
       
           let n_quote = ele.querySelector('div[class="gs_fl gs_flb"] a:nth-of-type(3)').textContent;
@@ -203,14 +203,14 @@
           }
       
           results.push({
-            type,
-            name,
-            journal,
-            date,
-            link,
-            desc,
-            authors,
-            n_quote
+            name: name,
+            url: link,
+            description: desc,
+            date: date,
+            type: type,
+            journal: journal,
+            authors: authors,
+            n_quote: n_quote
           });
         }
       
