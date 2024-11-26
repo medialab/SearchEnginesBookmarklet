@@ -11,7 +11,8 @@
 
   const moreResults = "switch_more_results.js",
     pagination = "extract_pagination_results.js",
-    autoscroll = "extract_autoscroll_results.js";
+    autoscroll = "extract_autoscroll_results.js",
+    images = "extract_image_results.js";
 
   const href = window.location.href;
 
@@ -39,7 +40,11 @@
 
   // Google
   if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
-    injectScriptWithArtoo("q", href.includes("num=") ? pagination : moreResults);
+    if(~href.search("&udm=2")){
+      injectScriptWithArtoo("q", images);
+    } else{
+      injectScriptWithArtoo("q", href.includes("num=") ? pagination : moreResults);
+    }
   }
 
   // DuckDuckGo
