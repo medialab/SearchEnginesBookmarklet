@@ -20,7 +20,7 @@
               ];
 
         if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
-            search = "google"
+            search = "google";
         }
 
         async function get_visible_elements(path){
@@ -36,29 +36,43 @@
             });
         }
 
-
         async function google_image(n){
-            let results = [];
-            let scrap = await get_visible_elements("div[id='search'] div[data-lpage]");
+            let results = [],
+                scrap,
+                ele,
+                pixels_top = 0,
+                pixels_top_now = 0,
+                verif = [];
 
-            for (let i = 0; i < scrap.length; i++) {
-                let ele = scrap[i],
-                    image_box = ele.querySelector("div[jsslot] g-img>img"),
-                    image = image_box.getAttribute("src"),
-                    width = image_box.getAttribute("width"),
-                    height = image_box.getAttribute("height"),
-                    url = ele.querySelector("div>span").textContent,
-                    desc = image_box.getAttribute("alt");
-                
-                results.push({
-                    image: image,
-                    url: url,
-                    description: desc,
-                    width: width,
-                    height: height,
-                    });
-
+            while(results.length < n){
+              console.log(pixels_top);
+              window.scroll({top: pixels_top + pixels_top_now, left: 0, behavior: "smooth"});
+              pixels_top_now = pixels_top;
+              await wait(1000, 3000);
+              scrap = await get_visible_elements("div[id='search'] div[data-lpage]")
+              while((ele = scrap.shift()) && results.length < n){
+                if(!(ele in verif)){
+                  image_box = ele.querySelector("div[jsslot] g-img>img"),
+                  image = image_box.getAttribute("src"),
+                  width = image_box.getAttribute("width"),
+                  height = image_box.getAttribute("height"),
+                  url = ele.querySelector("div>span").textContent,
+                  desc = image_box.getAttribute("alt"),
+                  pixels_top = image_box.getBoundingClientRect().top;
+                    
+                  results.push({
+                      image: image,
+                      url: url,
+                      description: desc,
+                      width: width,
+                      height: height,
+                  });
+                  verif.push(ele);
+                }
+                updateProgress(results.length, n);
+              }
             }
+            
             return results;
         }
 
@@ -114,8 +128,6 @@
             "img-" + search + "-results-" + query.replace(" ", "%20") + "-first" + data.length + ".csv"
           );
         });
-
-
 
     });
 }).call(this);
