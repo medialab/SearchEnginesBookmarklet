@@ -42,22 +42,21 @@
                 ele,
                 pixels_top = 0,
                 pixels_top_now = 0,
-                verif = [];
+                verif = new Set();
 
             while(results.length < n){
-              console.log(pixels_top);
               window.scroll({top: pixels_top + pixels_top_now, left: 0, behavior: "smooth"});
-              pixels_top_now = pixels_top;
+              pixels_top_now = pixels_top + pixels_top_now;
               await wait(1000, 3000);
               scrap = await get_visible_elements("div[id='search'] div[data-lpage]")
               while((ele = scrap.shift()) && results.length < n){
-                if(!(ele in verif)){
-                  image_box = ele.querySelector("div[jsslot] g-img>img"),
-                  image = image_box.getAttribute("src"),
-                  width = image_box.getAttribute("width"),
-                  height = image_box.getAttribute("height"),
-                  url = ele.querySelector("div>span").textContent,
-                  desc = image_box.getAttribute("alt"),
+                let image_box = ele.querySelector("div[jsslot] g-img>img"),
+                    image = image_box.getAttribute("src");
+                if(!verif.has(image)){
+                  let width = image_box.getAttribute("width"),
+                      height = image_box.getAttribute("height"),
+                      url = ele.querySelector("div[jsaction]>a").href,
+                      desc = image_box.getAttribute("alt");
                   pixels_top = image_box.getBoundingClientRect().top;
                     
                   results.push({
@@ -67,7 +66,7 @@
                       width: width,
                       height: height,
                   });
-                  verif.push(ele);
+                  verif.add(image);
                 }
                 updateProgress(results.length, n);
               }
