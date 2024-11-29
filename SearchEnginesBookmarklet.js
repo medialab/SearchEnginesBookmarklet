@@ -49,7 +49,11 @@
 
   // DuckDuckGo
   else if(~href.search(/:\/\/([^.]+\.)?duckduckgo\.[^/]+\//)){
-    injectScriptWithArtoo("q", autoscroll);
+    if(~href.search("&iax=")){
+      injectScriptWithArtoo("q", images);
+    } else{
+      injectScriptWithArtoo("q", autoscroll);
+    }
   }
 
   // Baidu

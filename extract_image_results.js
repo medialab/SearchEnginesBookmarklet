@@ -2,7 +2,7 @@
     artoo.injectScript("//medialab.github.io/SearchEnginesBookmarklet/FileSaver.min.js", function() {
         var loc = window.location,
             href = loc.href,
-            query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined)
+            query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
             search,
             styles = [
                 '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 400px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
@@ -20,7 +20,9 @@
               ];
 
         if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
-            search = "google";
+          search = "google";
+        } else if(~href.search(/:\/\/([^.]+\.)?duckduckgo\.[^/]+\//)){
+          search = "duckduckgo";
         }
 
         async function get_visible_elements(path){
@@ -36,6 +38,17 @@
             });
         }
 
+        function getBase64Image(img) {
+          img.crossOrigin = 'anonymous';
+          var canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          var ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          var dataURL = canvas.toDataURL("image/jpeg");
+          return dataURL;
+        }
+
         async function google_image(n){
             let results = [],
                 scrap,
@@ -47,11 +60,18 @@
             while(results.length < n){
               window.scroll({top: pixels_top + pixels_top_now, left: 0, behavior: "smooth"});
               pixels_top_now = pixels_top + pixels_top_now;
-              await wait(1000, 3000);
+              await wait(10000, 10000);
               scrap = await get_visible_elements("div[id='search'] div[data-lpage]")
               while((ele = scrap.shift()) && results.length < n){
                 let image_box = ele.querySelector("div[jsslot] g-img>img"),
                     image = image_box.getAttribute("src");
+                    if(~image.search("encrypted-tbn0.gstatic.com")){
+                        try {
+                          image = getBase64Image(ele.querySelector("div[jsslot] g-img>img"));
+                        } catch (e) {
+                          console.log(e);
+                        }
+                    }
                 if(!verif.has(image)){
                   let width = image_box.getAttribute("width"),
                       height = image_box.getAttribute("height"),
@@ -65,6 +85,45 @@
                       description: desc,
                       width: width,
                       height: height,
+                  });
+                  verif.add(image);
+                }
+                updateProgress(results.length, n);
+              }
+            }
+            return results;
+        }
+
+        async function duckduckgo_image(n) {
+          let results = [],
+                scrap,
+                ele,
+                pixels_top = 0,
+                pixels_top_now = 0,
+                verif = new Set();
+
+            while(results.length < n){
+              window.scroll({top: pixels_top + pixels_top_now, left: 0, behavior: "smooth"});
+              pixels_top_now = pixels_top + pixels_top_now;
+              await wait(1000, 3000);
+              scrap = await get_visible_elements("div[class='tile  tile--img  has-detail']")
+              while((ele = scrap.shift()) && results.length < n){
+                let image_box = ele.querySelector("img[class]");
+                let image = image_box.getAttribute("src");
+                try {
+                  image = getBase64Image(image_box);
+                } catch (e) {
+                  console.log(e);
+                }
+                if(!verif.has(image)){
+                  let url = ele.querySelector("a").href,
+                      desc = image_box.getAttribute("alt");
+                  pixels_top = image_box.getBoundingClientRect().top;
+                    
+                  results.push({
+                      image: image,
+                      url: url,
+                      description: desc,
                   });
                   verif.add(image);
                 }
@@ -119,7 +178,12 @@
         artoo.$("#BMoverlay .BMdownload").on('click', async function(){
           input = document.querySelector('#BMnumber')
           const n = parseInt(input.value, 10);
-          const data = await google_image(n);
+          let data;
+          if(search === 'google'){
+            data = await google_image(n);
+          } else {
+            data = await duckduckgo_image(n);
+          }
           updateProgress(data.length, data.length);
           saveAs(
             new Blob([artoo.writers.csv(data)],
