@@ -46,110 +46,85 @@
           scrap = Array.from(document.querySelectorAll(path));
           while(scrap.length < n || verif){
             pixel_scroll += Math.random()*2000 + Math.random()*500;
-            console.log(scrap.length);
             window.scroll({top: pixel_scroll, left: 0, behavior: "smooth"});
-            await wait(1000, 2000);
+            await wait(2000, 3000);
             scrap = Array.from(document.querySelectorAll(path));
-            if(search === 'google'){
-              verif = ~(scrap[scrap.length - 1].querySelector("div[jsslot] g-img>img").getAttribute("src")).search("data:image/gif;base64,") ? true : false;
-            } else{
-              verif = ~(scrap[scrap.length - 1].querySelector("img[class]").getAttribute("src")).search("data:image/gif;base64,") ? true : false;
-            }
+            const lastElement = scrap[scrap.length - 1];
+            const img = search === 'google' 
+                ? lastElement.querySelector("div[jsslot] g-img > img") 
+                : lastElement.querySelector("img[class]");
+            
+            verif = img && img.getAttribute("src").includes("data:image/gif;base64,");
           }
           return Array.from(scrap);
         }
 
-        async function google_image(n){
+        async function get_image(image_box){
+          let image = image_box.getAttribute("src");
+          if(!(~image.search("data:image/gif;base64,"))){
+            try {
+              image = await getBase64FromImageURL(image);
+            } catch (e) {
+              let error = "CORS blocking detected !",
+                  popup = '\n\nTry using a browser extension such as the one that will open in a new tab (first allow it to pop-up).\n\nThen activate the extension, refresh the page and retry the bookmarklet.';
+
+              if(navigator.userAgent.indexOf('Chrome') > -1){
+                window.alert(error + popup);
+                window.open('https://chromewebstore.google.com/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf?hl=fr');
+              }else if (navigator.userAgent.indexOf('Firefox') > -1){
+                window.alert(error + popup + '\n\n(you should use the \"Allow CORS\" option of the extension)');
+                window.open('https://addons.mozilla.org/en-US/firefox/addon/mheadercontrol/');
+              }else{
+                window.alert(CSP + '\\n\\nThis bookmarklet is intended to work only within Firefox or Chrome/Chromium.\\n\\nPlease use one of these browsers and retry.');
+              }
+
+              throw(e);
+            }
+          }
+          return image;
+
+        }
+
+        async function scrape(n){
             let results = [],
-                scrap = await scrap_n_results(n, "div[id='search'] div[data-lpage]"),
+                box_path = search === 'google' ? "div[id='search'] div[data-lpage]" : "div[class='tile  tile--img  has-detail']",
+                scrap = await scrap_n_results(n, box_path),
                 ele,
                 verif = new Set();
 
               while((ele = scrap.shift()) && results.length < n){
-                let image_box = ele.querySelector("div[jsslot] g-img>img"),
-                    image = image_box.getAttribute("src");
-                    if(~image.search("encrypted-tbn0.gstatic.com")){
-                        try {
-                          image = await getBase64FromImageURL(image);
-                        } catch (e) {
-                          let error = "CORS blocking detected !",
-                              popup = '\n\nTry using a browser extension such as the one that will open in a new tab (first allow it to pop-up).\n\nThen activate the extension, refresh the page and retry the bookmarklet.';
-
-                          if(navigator.userAgent.indexOf('Chrome') > -1){
-                            window.alert(error + popup);
-                            window.open('https://chromewebstore.google.com/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf?hl=fr');
-                          }else if (navigator.userAgent.indexOf('Firefox') > -1){
-                            window.alert(error + popup + '\n\n(you should use the \"Allow CORS\" option of the extension)');
-                            window.open('https://addons.mozilla.org/en-US/firefox/addon/mheadercontrol/');
-                          }else{
-                            window.alert(CSP + '\\n\\nThis bookmarklet is intended to work only within Firefox or Chrome/Chromium.\\n\\nPlease use one of these browsers and retry.');
-                          }
-                        }
-                    }
+                let path = search === 'google' ? "div[jsslot] g-img>img":"img[class]",
+                    image_box = ele.querySelector(path),
+                    image = await get_image(image_box);
                 if(!verif.has(image)){
-                  let width = image_box.getAttribute("width"),
-                      height = image_box.getAttribute("height"),
-                      url = ele.querySelector("div[jsaction]>a").href,
-                      desc = image_box.getAttribute("alt");
+                  if(search === 'google') {
+                    let width = image_box.getAttribute("width"),
+                        height = image_box.getAttribute("height"),
+                        url = ele.querySelector("div[jsaction]>a").href,
+                        desc = image_box.getAttribute("alt");
                     
-                  results.push({
-                      image: image,
-                      url: url,
-                      description: desc,
-                      width: width,
-                      height: height,
-                  });
+                    results.push({
+                        image: image,
+                        url: url,
+                        description: desc,
+                        width: width,
+                        height: height,
+                    });
+                  } else{
+                    let url = ele.querySelector("a").href,
+                        desc = image_box.getAttribute("alt");
+                  
+                    results.push({
+                        image: image,
+                        url: url,
+                        description: desc,
+                    });
+                  }
                   verif.add(image);
+
                 }
                 updateProgress(results.length, n);
               }
-            return results;
-        }
-
-        async function duckduckgo_image(n) {
-          let results = [],
-              scrap = await scrap_n_results(n, "div[class='tile  tile--img  has-detail']"),
-              ele,
-              pixels_top = 0,
-              pixels_top_now = 0,
-              verif = new Set();
-
-            while((ele = scrap.shift()) && results.length < n){
-              let image_box = ele.querySelector("img[class]");
-              let image = image_box.getAttribute("src");
-              try {
-                image = await getBase64FromImageURL(image_box.src);
-              } catch (e) {
-                let error = "CORS blocking detected !",
-                    popup = '\n\nTry using a browser extension such as the one that will open in a new tab (first allow it to pop-up).\n\nThen activate the extension, refresh the page and retry the bookmarklet.';
-
-                if(navigator.userAgent.indexOf('Chrome') > -1){
-                  window.alert(error + popup);
-                  window.open('https://chromewebstore.google.com/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf?hl=fr');
-                }else if (navigator.userAgent.indexOf('Firefox') > -1){
-                  window.alert(error + popup + '\n\n(you should use the \"Allow CORS\" option of the extension)');
-                  window.open('https://addons.mozilla.org/en-US/firefox/addon/mheadercontrol/');
-                }else{
-                  window.alert(CSP + '\\n\\nThis bookmarklet is intended to work only within Firefox or Chrome/Chromium.\\n\\nPlease use one of these browsers and retry.');
-                }
-
-                throw e;
-              }
-              if(!verif.has(image)){
-                let url = ele.querySelector("a").href,
-                    desc = image_box.getAttribute("alt");
-                pixels_top = image_box.getBoundingClientRect().top;
-                  
-                results.push({
-                    image: image,
-                    url: url,
-                    description: desc,
-                });
-                verif.add(image);
-              }
-              updateProgress(results.length, n);
-            }
-            
             return results;
         }
 
@@ -178,12 +153,12 @@
           '<div id="BMoverlay">' +
             '<h1>SearchEngineBookmarklets</h1>' +
             '<img id="BMlogo" src="https://medialab.github.io/SearchEnginesBookmarklet/images/duckduckgo-google-bing-baidu-256.png" alt="SEB logo" />' +
-            '<h2>Extract ' + search + ' results</h2>' +
+            '<h2>Extract ' + search + ' images</h2>' +
             '<p>Search for «&nbsp;<b id="BMquery">' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>&nbsp;»</p>' +
             '<p>How many results to collect at most?' +
               '<input type="number" id="BMnumber" value="' + 100 + '"></input>' +
             '</p>' +
-            '<p>The page will be automatically expanded until reaching desired number of results.<br/>' +
+            '<p>The page will be automatically expanded until reaching desired number of images.<br/>' +
                'You might need to validate some CAPTCHA.</p>' +
             '<input class="BMdownload" type="button" value="Start download!"></input>' +
             '<div id="BMprogressContainer">' +
@@ -197,12 +172,7 @@
         artoo.$("#BMoverlay .BMdownload").on('click', async function(){
           input = document.querySelector('#BMnumber')
           const n = parseInt(input.value, 10);
-          let data;
-          if(search === 'google'){
-            data = await google_image(n);
-          } else {
-            data = await duckduckgo_image(n);
-          }
+          let data = await scrape(n);
           updateProgress(data.length, data.length);
           saveAs(
             new Blob([artoo.writers.csv(data)],
