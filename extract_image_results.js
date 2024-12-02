@@ -25,51 +25,65 @@
           search = "duckduckgo";
         }
 
-        async function get_visible_elements(path){
-            let elements = document.querySelectorAll(path);
-            return Array.from(elements).filter(el => {
-                const rect = el.getBoundingClientRect();
-                return (
-                    rect.top >= 0 &&
-                    rect.left >= 0 &&
-                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-                );
-            });
+        async function getBase64FromImageURL(url) {
+          const response = await fetch(url, { mode: 'cors' });
+          if (!response.ok) {
+              throw new Error(response.statusText);
+          }
+          const blob = await response.blob();
+          const reader = new FileReader();
+          return new Promise((resolve, reject) => {
+              reader.onloadend = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
+          });
         }
 
-        function getBase64Image(img) {
-          img.crossOrigin = 'anonymous';
-          var canvas = document.createElement("canvas");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          var ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0);
-          var dataURL = canvas.toDataURL("image/jpeg");
-          return dataURL;
+        async function scrap_n_results(n, path) {
+          let scrap,
+              pixel_scroll = 0,
+              verif = true;
+          scrap = Array.from(document.querySelectorAll(path));
+          while(scrap.length < n || verif){
+            pixel_scroll += Math.random()*2000 + Math.random()*500;
+            console.log(scrap.length);
+            window.scroll({top: pixel_scroll, left: 0, behavior: "smooth"});
+            await wait(1000, 2000);
+            scrap = Array.from(document.querySelectorAll(path));
+            if(search === 'google'){
+              verif = ~(scrap[scrap.length - 1].querySelector("div[jsslot] g-img>img").getAttribute("src")).search("data:image/gif;base64,") ? true : false;
+            } else{
+              verif = ~(scrap[scrap.length - 1].querySelector("img[class]").getAttribute("src")).search("data:image/gif;base64,") ? true : false;
+            }
+          }
+          return Array.from(scrap);
         }
 
         async function google_image(n){
             let results = [],
-                scrap,
+                scrap = await scrap_n_results(n, "div[id='search'] div[data-lpage]"),
                 ele,
-                pixels_top = 0,
-                pixels_top_now = 0,
                 verif = new Set();
 
-            while(results.length < n){
-              window.scroll({top: pixels_top + pixels_top_now, left: 0, behavior: "smooth"});
-              pixels_top_now = pixels_top + pixels_top_now;
-              await wait(10000, 10000);
-              scrap = await get_visible_elements("div[id='search'] div[data-lpage]")
               while((ele = scrap.shift()) && results.length < n){
                 let image_box = ele.querySelector("div[jsslot] g-img>img"),
                     image = image_box.getAttribute("src");
                     if(~image.search("encrypted-tbn0.gstatic.com")){
                         try {
-                          image = getBase64Image(ele.querySelector("div[jsslot] g-img>img"));
+                          image = await getBase64FromImageURL(image);
                         } catch (e) {
-                          console.log(e);
+                          let error = "CORS blocking detected !",
+                              popup = '\n\nTry using a browser extension such as the one that will open in a new tab (first allow it to pop-up).\n\nThen activate the extension, refresh the page and retry the bookmarklet.';
+
+                          if(navigator.userAgent.indexOf('Chrome') > -1){
+                            window.alert(error + popup);
+                            window.open('https://chromewebstore.google.com/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf?hl=fr');
+                          }else if (navigator.userAgent.indexOf('Firefox') > -1){
+                            window.alert(error + popup + '\n\n(you should use the \"Allow CORS\" option of the extension)');
+                            window.open('https://addons.mozilla.org/en-US/firefox/addon/mheadercontrol/');
+                          }else{
+                            window.alert(CSP + '\\n\\nThis bookmarklet is intended to work only within Firefox or Chrome/Chromium.\\n\\nPlease use one of these browsers and retry.');
+                          }
                         }
                     }
                 if(!verif.has(image)){
@@ -77,7 +91,6 @@
                       height = image_box.getAttribute("height"),
                       url = ele.querySelector("div[jsaction]>a").href,
                       desc = image_box.getAttribute("alt");
-                  pixels_top = image_box.getBoundingClientRect().top;
                     
                   results.push({
                       image: image,
@@ -90,45 +103,51 @@
                 }
                 updateProgress(results.length, n);
               }
-            }
             return results;
         }
 
         async function duckduckgo_image(n) {
           let results = [],
-                scrap,
-                ele,
-                pixels_top = 0,
-                pixels_top_now = 0,
-                verif = new Set();
+              scrap = await scrap_n_results(n, "div[class='tile  tile--img  has-detail']"),
+              ele,
+              pixels_top = 0,
+              pixels_top_now = 0,
+              verif = new Set();
 
-            while(results.length < n){
-              window.scroll({top: pixels_top + pixels_top_now, left: 0, behavior: "smooth"});
-              pixels_top_now = pixels_top + pixels_top_now;
-              await wait(1000, 3000);
-              scrap = await get_visible_elements("div[class='tile  tile--img  has-detail']")
-              while((ele = scrap.shift()) && results.length < n){
-                let image_box = ele.querySelector("img[class]");
-                let image = image_box.getAttribute("src");
-                try {
-                  image = getBase64Image(image_box);
-                } catch (e) {
-                  console.log(e);
+            while((ele = scrap.shift()) && results.length < n){
+              let image_box = ele.querySelector("img[class]");
+              let image = image_box.getAttribute("src");
+              try {
+                image = await getBase64FromImageURL(image_box.src);
+              } catch (e) {
+                let error = "CORS blocking detected !",
+                    popup = '\n\nTry using a browser extension such as the one that will open in a new tab (first allow it to pop-up).\n\nThen activate the extension, refresh the page and retry the bookmarklet.';
+
+                if(navigator.userAgent.indexOf('Chrome') > -1){
+                  window.alert(error + popup);
+                  window.open('https://chromewebstore.google.com/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf?hl=fr');
+                }else if (navigator.userAgent.indexOf('Firefox') > -1){
+                  window.alert(error + popup + '\n\n(you should use the \"Allow CORS\" option of the extension)');
+                  window.open('https://addons.mozilla.org/en-US/firefox/addon/mheadercontrol/');
+                }else{
+                  window.alert(CSP + '\\n\\nThis bookmarklet is intended to work only within Firefox or Chrome/Chromium.\\n\\nPlease use one of these browsers and retry.');
                 }
-                if(!verif.has(image)){
-                  let url = ele.querySelector("a").href,
-                      desc = image_box.getAttribute("alt");
-                  pixels_top = image_box.getBoundingClientRect().top;
-                    
-                  results.push({
-                      image: image,
-                      url: url,
-                      description: desc,
-                  });
-                  verif.add(image);
-                }
-                updateProgress(results.length, n);
+
+                throw e;
               }
+              if(!verif.has(image)){
+                let url = ele.querySelector("a").href,
+                    desc = image_box.getAttribute("alt");
+                pixels_top = image_box.getBoundingClientRect().top;
+                  
+                results.push({
+                    image: image,
+                    url: url,
+                    description: desc,
+                });
+                verif.add(image);
+              }
+              updateProgress(results.length, n);
             }
             
             return results;
