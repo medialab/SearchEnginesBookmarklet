@@ -40,20 +40,12 @@
 
   // Google
   if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
-    if(~href.search("&udm=2")){
-      injectScriptWithArtoo("q", images);
-    } else{
-      injectScriptWithArtoo("q", href.includes("num=") ? pagination : moreResults);
-    }
+    injectScriptWithArtoo("q", ~href.search("&udm=2") ? images : (href.includes("num=") ? pagination : moreResults));
   }
 
   // DuckDuckGo
   else if(~href.search(/:\/\/([^.]+\.)?duckduckgo\.[^/]+\//)){
-    if(~href.search("&iax=")){
-      injectScriptWithArtoo("q", images);
-    } else{
-      injectScriptWithArtoo("q", autoscroll);
-    }
+    injectScriptWithArtoo("q", ~href.search("&iax=") ? images : autoscroll);
   }
 
   // Baidu
