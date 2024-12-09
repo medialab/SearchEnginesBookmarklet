@@ -25,6 +25,11 @@
           search = "DuckDuckGo";
         }
 
+        async function wait(minDelay, maxDelay) {
+          const delay = Math.floor(Math.random() * (maxDelay - minDelay)) + minDelay;
+          return new Promise(resolve => setTimeout(resolve, delay));
+        }
+
         async function getBase64FromImageURL(url) {
           const response = await fetch(url, { mode: 'cors' });
           if (!response.ok) {
@@ -61,28 +66,25 @@
 
         async function get_image(image_box){
           let image = image_box.getAttribute("src");
-          if(!(~image.search("data:image/gif;base64,"))){
+          if (!(~image.search("data:image/gif;base64,"))) {
             try {
               image = await getBase64FromImageURL(image);
             } catch (e) {
-              let error = "CORS blocking detected !",
-                  popup = '\n\nTry using a browser extension such as the one that will open in a new tab (first allow it to pop-up).\n\nThen activate the extension, refresh the page and retry the bookmarklet.';
-
-              if(navigator.userAgent.indexOf('Chrome') > -1){
+              let error = 'CORS protection detected!',
+                popup = '\n\nTry to enforce it using a second browser extension such as the one that will open in a new tab (first allow it to pop-up).\n\nThen activate the extension, refresh the page and retry the bookmarklet.';
+              if (navigator.userAgent.indexOf('Chrome') > -1) {
                 window.alert(error + popup);
                 window.open('https://chromewebstore.google.com/detail/allow-cors-access-control/lhobafahddgcelffkeicbaginigeejlf?hl=fr');
-              }else if (navigator.userAgent.indexOf('Firefox') > -1){
+              } else if (navigator.userAgent.indexOf('Firefox') > -1) {
                 window.alert(error + popup + '\n\n(you should use the \"Allow CORS\" option of the extension)');
                 window.open('https://addons.mozilla.org/en-US/firefox/addon/mheadercontrol/');
-              }else{
-                window.alert(CSP + '\\n\\nThis bookmarklet is intended to work only within Firefox or Chrome/Chromium.\\n\\nPlease use one of these browsers and retry.');
+              } else {
+                window.alert(error + '\n\nThis bookmarklet is intended to work only within Firefox or Chrome/Chromium.\n\nPlease use one of these browsers and retry.');
               }
-
               throw(e);
             }
           }
           return image;
-
         }
 
         async function scrape(n){
@@ -97,8 +99,8 @@
               image_box = ele.querySelector(path),
               image_url = image_box.getAttribute("src").replace(/^data:image.*$/, '').replace(/^\/\//, 'https://'),
               image = await get_image(image_box),
-              width = image_box.naturalWidth, //.getAttribute("width"),
-              height = image_box.naturalHeight; //.getAttribute("height");
+              width = image_box.naturalWidth,
+              height = image_box.naturalHeight;
 
             if(!verif.has(image)){
               let url = ele.querySelector(search === 'Google' ? "div[jsaction]>a" : "a").href,
@@ -119,23 +121,18 @@
           return results;
         }
 
-        async function wait(minDelay, maxDelay) {
-            const delay = Math.floor(Math.random() * (maxDelay - minDelay)) + minDelay;
-            return new Promise(resolve => setTimeout(resolve, delay));
-        }
-
         function updateProgress(current, total) {
-            const progressBar = document.querySelector('#BMprogressBar');
-            const progressText = document.querySelector('#BMprogressText');
-            let percentage = Math.min((current / total) * 100, 100);
-            progressBar.style.width = percentage + '%';
-            progressText.textContent = `Collected ${current} of ${total} results`;
+          const progressBar = document.querySelector('#BMprogressBar');
+          const progressText = document.querySelector('#BMprogressText');
+          let percentage = Math.min((current / total) * 100, 100);
+          progressBar.style.width = percentage + '%';
+          progressText.textContent = `Collected ${current} of ${total} results`;
         }
 
         // Monitor input query modifications
         artoo.$('input[type="search"]').on('selectionchange', function(ev) {
-            query = ev.target.value;
-            artoo.$("#BMquery").text(query);
+          query = ev.target.value;
+          artoo.$("#BMquery").text(query);
         });
   
         // In-page popup injection
