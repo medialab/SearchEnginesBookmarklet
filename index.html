@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
                   "href = window.location.href," +
                   "bod = document.getElementsByTagName('body')[0]," +
                   "CSP = 'CSP protection detected!\\n\\nthis website forbids your browser to load the scripts required for SearchEnginesBookmarklet!'," +
-                  "popup = '\\n\\nTry to enforce it using a browser extension such as the one that will open in a new tab (first allow it to pop-up).\\n\\nThen activate the extension, refresh the page and retry the bookmarklet.'," +
+                  "popup = '\\n\\nTry to enforce it using a browser extension such as the one that will open in a new tab (first allow it to pop-up). Then activate the extension, refresh the page and retry the bookmarklet.'," +
                   "script = document.createElement('script');" +
                 "script.type = 'text/javascript';" +
                 "script.src = '" + window.location.href.replace(/^https?:/, '').replace(/\/?(index.html)?$/, '/') + scriptName + ".js';" +

@@ -159,10 +159,10 @@
         return results;
       }
 
-      // Monitor input query modifications
-      artoo.$('input[type="search"]').on('selectionchange', function(ev) {
-        query = ev.target.value;
-        artoo.$("#BMquery").text(query);
+      // Monitor dynamic input query modifications or switch to another search type for DuckDuckGo
+      window.navigation.addEventListener("navigate", async (event) => {
+        await wait(100, 200);
+        location.reload(true);
       });
 
       // In-page popup injection
