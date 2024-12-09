@@ -1,4 +1,4 @@
-(async function () {
+(async function(){
   artoo.injectScript("//medialab.github.io/SearchEnginesBookmarklet/moment-with-locales.min.js", function() {
     artoo.injectScript("//medialab.github.io/SearchEnginesBookmarklet/FileSaver.min.js", function() {
 
@@ -11,8 +11,8 @@
         },
         timeGaps = {},
         query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
-        hlang = navigator.language.replace(/-.*$/, ''),
         search = ~href.search(/:\/\/([^.]+\.)?qwant\.[^/]+\//) ? 'Qwant' : 'DuckDuckGo',
+        hlang = navigator.language.replace(/-.*$/, ''),
         styles = [
           '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 400px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
           '#BMoverlay h1 {display: block; font-size: 23px; font-weight: bold; margin: 0px 70px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline; font-family: monospace; box-sizing: content-box;}',
@@ -159,11 +159,11 @@
         return results;
       }
 
-    // Monitor input query modifications
-    artoo.$('input[type="search"]').on('selectionchange', function(ev) {
-      query = ev.target.value;
-      artoo.$("#BMquery").text(query);
-    });
+      // Monitor input query modifications
+      artoo.$('input[type="search"]').on('selectionchange', function(ev) {
+        query = ev.target.value;
+        artoo.$("#BMquery").text(query);
+      });
 
       // In-page popup injection
       artoo.$('body').append(
@@ -190,7 +190,7 @@
       artoo.$("#BMoverlay .BMdownload").on('click', async function(){
         input = document.querySelector('#BMnumber')
         const n = parseInt(input.value, 10);
-        const data = await scrape(n, href);
+        let data = await scrape(n, href);
         updateProgress(data.length, data.length);
         saveAs(
           new Blob([artoo.writers.csv(data)],
