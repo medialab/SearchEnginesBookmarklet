@@ -20,7 +20,9 @@
             '#BMoverlay #BMlogo {position: absolute; top: 8px; right: 8px; width: 64px; height: 64px;}',
             '#BMoverlay h2 {display: block; font-size: 17px; font-weight: bold; margin: 0px 70px 25px 0px; padding: 0; line-height: 22px; font-family: monospace;}',
             '#BMoverlay p {display: block; font-size: 14px; font-family: monospace; margin: 12px 0; padding: 0; line-height: 16px;}',
-            '#BMoverlay input[type="button"] {margin: 5px 0; padding: 5px 10px; font-family: monospace; font-size: 12px; font-weight: bold; border: 1px solid #555; border-radius: 2px; background-color: #EEE; line-height: 14px;}',
+            '#BMoverlay #BMdropdown {margin: 0 20px 0 10px; padding: 0 5px; height: 26px; color: unset; border: 1px solid #555; border-radius: 2px; background-color: #EEE; font-family: monospace;}',
+            '#BMoverlay .extra {color: grey; margin-bottom: 0; font-size: 0.9em;}',
+            '#BMoverlay input[type="button"] {margin: 5px 0; padding: 5px 10px; font-family: monospace; font-size: 12px; font-weight: bold; border: 1px solid #555; border-radius: 2px; background-color: #EEE; line-height: 14px; cursor: pointer;}',
             '#BMoverlay #BMfooter {margin: 15px 0 0 0; font-size: 10px; color: #555;}',
             '#BMoverlay #BMfooter a, #BMoverlay #BMfooter a:visited {color: black; text-decoration: underline; color: #555;}'
           ];
@@ -32,7 +34,7 @@
           start = (~href.search(/start=/) ? parseInt(href.replace(/^.*[#?&]start=(\d+).*$/, '$1')) : 0);
           if(~href.search(/:\/\/([^.]+\.)?scholar\.google\.[^/]+\//)){
             total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 20);
-            search = "Scholar";
+            search = "Google Scholar";
             nextPageLink = '.gs_ico.gs_ico_nav_next';
           } else {
             total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100);
@@ -250,7 +252,7 @@
               }
             }
           });
-        } else if (search === 'Scholar'){
+        } else if (search === 'Google Scholar'){
           newdata = scrape_scholar();
         } else {
           newdata = scrape();
@@ -286,9 +288,9 @@
             '<input class="BMdownloadAll" type="button"></input>' +
             '<input class="BMdownload" type="button"></input>' +
             '<input class="BMreset" type="button" value="Clear stored results and restart from first page"></input>' +
-            '<p>Run the same query on another supported search engine:</p>' +
-            '<select id="BMdropdown"></select>' +
-            '<input class="BMredirect" type="button" value="Redirect Me!"></input>' +
+            '<p class="extra">Or search for it on another supported search engine:</p>' +
+            '<select id="BMdropdown" class="extra"></select>' +
+            '<input class="BMredirect extra" type="button" value="Redirect Me!"></input>' +
             '<p id="BMfooter">Powered by <a target="_blank" href="https://medialab.sciencespo.fr/">médialab Sciences Po</a> &ndash; Discover more <a target="_blank" href="https://medialab.sciencespo.fr/en/tools/">médialab tools</a>!</p>' +
           '</div>'
         );
@@ -326,7 +328,7 @@
             window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + '&count=' + tot + '&first=' + st + '&FORM=PERE';
           } else if (search === 'Baidu') {
             window.location.href = loc.protocol + "//" + loc.hostname + "/s?wd=" + query + '&rn=' + tot + '&pn=' + st;
-          } else if (search === 'Scholar') {
+          } else if (search === 'Google Scholar') {
             window.location.href = loc.protocol + "//" + loc.hostname + "/scholar?q=" + query + '&hl=' + hlang + "&num=" + tot + "&start=" + st;
           }
         };
