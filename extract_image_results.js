@@ -125,10 +125,12 @@
       }
 
       // Monitor dynamic input query modifications or switch to another search type for DuckDuckGo
-      window.navigation.addEventListener("navigate", async (event) => {
+      new MutationObserver(async () => {
         await wait(100, 200);
-        location.reload(true);
-      });
+        if (loc.href !== href) {
+          loc.reload(true);
+        }
+      }).observe(document, {subtree: true, childList: true});
 
       // In-page popup injection
       artoo.$('body').append(
