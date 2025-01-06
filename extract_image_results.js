@@ -4,7 +4,7 @@
       var loc = window.location,
         href = loc.href,
         query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
-        search = ~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//) ? 'Google' : 'DuckDuckGo',
+        search = ~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//) ? 'Google Images' : 'DuckDuckGo Images',
         styles = [
           '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 400px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
           '#BMoverlay h1 {display: block; font-size: 23px; font-weight: bold; margin: 0px 70px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline; font-family: monospace; box-sizing: content-box;}',
@@ -58,7 +58,7 @@
           await wait(2000, 3000);
           scrap = Array.from(document.querySelectorAll(path));
           const lastElement = scrap[scrap.length - 1];
-          const img = search === 'Google'
+          const img = search === 'Google Images'
             ? lastElement.querySelector("div[jsslot] g-img > img") 
             : lastElement.querySelector("img[class]");
           
@@ -92,13 +92,13 @@
 
       async function scrape(n){
         let results = [],
-          box_path = search === 'Google' ? "div[id='search'] div[data-lpage]" : "div[class='tile  tile--img  has-detail']",
+          box_path = search === 'Google Images' ? "div[id='search'] div[data-lpage]" : "div[class='tile  tile--img  has-detail']",
           scrap = await scrap_n_results(n, box_path),
           ele,
           verif = new Set();
 
         while ((ele = scrap.shift()) && results.length < n) {
-          let path = search === 'Google' ? "div[jsslot] g-img>img":"img[class]",
+          let path = search === 'Google Images' ? "div[jsslot] g-img>img":"img[class]",
             image_box = ele.querySelector(path),
             image_url = image_box.getAttribute("src").replace(/^data:image.*$/, '').replace(/^\/\//, 'https://'),
             image = await get_image(image_box),
@@ -106,7 +106,7 @@
             height = image_box.naturalHeight;
 
           if (!verif.has(image)) {
-            let url = ele.querySelector(search === 'Google' ? "div[jsaction]>a" : "a").href,
+            let url = ele.querySelector(search === 'Google Images' ? "div[jsaction]>a" : "a").href,
               desc = image_box.getAttribute("alt");
             results.push({
               image_url: image_url,
@@ -124,6 +124,26 @@
         return results;
       }
 
+      function gen_dropdown_list(search){
+        let dropdown_list = ['Google', 'DuckDuckGo', 'Bing', 'Qwant', 'Baidu', "Scholar", "Google Images", "DuckDuckGo Images"];
+        dropdown_list = dropdown_list.filter(item => item !== search);
+        return dropdown_list;
+      }
+
+      function add_values_dropdown(search) {
+        const dropdown = document.getElementById('BMdropdown');
+        const options = gen_dropdown_list(search);
+      
+        dropdown.innerHTML = '';
+      
+        options.forEach(optionValue => {
+          const option = document.createElement('option');
+          option.value = optionValue;
+          option.textContent = optionValue;
+          dropdown.appendChild(option);
+        });
+      }
+
       // Monitor dynamic input query modifications or switch to another search type for DuckDuckGo
       new MutationObserver(async () => {
         await wait(100, 200);
@@ -138,7 +158,7 @@
         '<div id="BMoverlay">' +
           '<h1>SearchEngineBookmarklets</h1>' +
           '<img id="BMlogo" src="https://medialab.github.io/SearchEnginesBookmarklet/images/duckduckgo-google-bing-baidu-256.png" alt="SEB logo" />' +
-          '<h2>Extract ' + search + ' Images</h2>' +
+          '<h2>Extract ' + search + '</h2>' +
           '<p>Search for «&nbsp;<b id="BMquery">' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>&nbsp;»</p>' +
           '<p>How many results to collect at most?' +
             '<input type="number" id="BMnumber" value="100"></input>' +
@@ -150,9 +170,14 @@
             '<div id="BMprogressBar"></div>' +
           '</div>' +
           '<p id="BMprogressText"></p>' +
+          '<p>Run the same query on another supported search engine:</p>' +
+          '<select id="BMdropdown"></select>' +
+          '<input class="BMredirect" type="button" value="Redirect Me!"></input>' +
           '<p id="BMfooter">Powered by <a target="_blank" href="https://medialab.sciencespo.fr/">médialab Sciences Po</a> &ndash; Discover more <a target="_blank" href="https://medialab.sciencespo.fr/en/tools/">médialab tools</a>!</p>' +
         '</div>'
       );
+
+      add_values_dropdown(search);
 
       artoo.$("#BMoverlay .BMdownload").on('click', async function(){
         input = document.querySelector('#BMnumber')
@@ -162,8 +187,41 @@
         saveAs(
           new Blob([artoo.writers.csv(data)],
                    {type: "text/plain;charset=utf-8"}),
-          search.toLowerCase() + "-images-results-" + query.replace(" ", "%20") + "-first" + data.length + ".csv"
+          search.toLowerCase().replace(" ", "-") + "-results-" + query.replace(" ", "%20") + "-first" + data.length + ".csv"
         );
+      });
+
+      artoo.$("#BMoverlay .BMredirect").on('click', async function(){
+        search_engine = document.querySelector("#BMdropdown").value;
+        console.log(search_engine)
+        switch(search_engine){
+          case "Google":
+            window.location.href = "https://www.google.com/search?q=" + query + "&num=100&start=0";
+            break;
+          case "DuckDuckGo":
+            window.location.href = "https://duckduckgo.com/?t=h_&q=" + query + "&ia=web";
+            break;
+          case "Bing":
+            window.location.href = "https://www.bing.com/search?q=" + query + "&first=0&count=30&FORM=PERE";
+            break;
+          case "Qwant":
+            window.location.href = "https://www.qwant.com/?l=fr&q=" + query + "&t=web";
+            break;
+          case "Baidu":
+            window.location.href = "https://www.baidu.com/s?wd=" + query + "&pn=0&rn=50";
+            break;
+          case "Scholar":
+            window.location.href = "https://scholar.google.com/scholar?q=" + query + "&hl=fr&num=20&start=0";
+            break;
+          case "Google Images":
+            window.location.href = "https://www.google.com/search?num=100&q=" + query + "&udm=2";
+            break;
+          case "DuckDuckGo Images":
+            window.location.href = "https://duckduckgo.com/?t=h_&q=" + query + "&iax=images&ia=images";
+            break;
+          default:
+            break;
+        }
       });
 
     });
