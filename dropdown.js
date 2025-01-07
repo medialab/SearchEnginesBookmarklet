@@ -35,7 +35,7 @@ function redirect_engine(engine, query){
     case "Baidu":
       window.location.href = "https://www.baidu.com/s?wd=" + query + "&pn=0&rn=50";
       break;
-    case "Scholar":
+    case "Google Scholar":
       window.location.href = "https://scholar.google.com/scholar?q=" + query + "&hl=fr&num=20&start=0";
       break;
     case "Google Images":
@@ -48,3 +48,4 @@ function redirect_engine(engine, query){
       break;
   }
 };
+

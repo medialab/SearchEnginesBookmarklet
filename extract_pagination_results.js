@@ -342,7 +342,7 @@
           saveAs(
             new Blob([artoo.writers.csv(newdata)],
                     {type: "text/plain;charset=utf-8"}),
-            search.toLowerCase() + "-results-" + hlang + "-" + query + "-page" + page + ".csv"
+            search.toLowerCase().replace(" ", "-") + "-results-" + hlang + "-" + query + "-page" + page + ".csv"
           );
         });
 
@@ -350,7 +350,7 @@
           saveAs(
             new Blob([artoo.writers.csv(fulldata)],
                     {type: "text/plain;charset=utf-8"}),
-            search.toLowerCase() + "-results-" + hlang + "-" + query + "-pages" + artoo.store(storage + '-pages').sort().join('-') + ".csv"
+            search.toLowerCase().replace(" ", "-") + "-results-" + hlang + "-" + query + "-pages" + artoo.store(storage + '-pages').sort().join('-') + ".csv"
           );
         });
 
@@ -360,7 +360,7 @@
 
         artoo.$("#BMoverlay .BMredirect").on('click', async function(){
           search_engine = document.querySelector("#BMdropdown").value;
-          redirect_engine(search_engine, query)
+          redirect_engine(search_engine, query);
         });
       });
     });
