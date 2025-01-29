@@ -39,7 +39,7 @@
   };
 
   // Google
-  if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
+  if(~href.search(/:\/\/(www|scholar)?\.google\.[^/]+\//)){
     injectScriptWithArtoo("q", ~href.search("&udm=2") ? images : (href.includes("num=") ? pagination : moreResults));
   }
 
@@ -64,5 +64,5 @@
     injectScriptWithArtoo("q", href.includes("count=") ? pagination : moreResults);
   }
 
-  else window.alert("You can only use this bookmarklet on Google, DuckDuckGo, Baidu, Qwant and Bing.");
+  else window.alert("You can only use this bookmarklet on Google (web, images & Scholar), DuckDuckGo (web & images), Baidu, Qwant and Bing.");
 }).call(this);

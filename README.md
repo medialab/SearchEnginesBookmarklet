@@ -1,6 +1,6 @@
 # SearchEnginesBookmarklet
 
-Harvesting lists of urls, titles, dates and descriptions from a query on a search engine such as Google, DuckDuckGo, Baidu, Bing or Qwant is a recurrent need in digital methods and a hardly automatable one because of those website's restrictions towards robots.
+Harvesting lists of urls, titles, dates and descriptions from a query on a search engine such as Google (web, images & Scholar), DuckDuckGo (web & images), Baidu, Bing or Qwant is a recurrent need in digital methods and a hardly automatable one because of those website's restrictions towards robots.
 
 SearchEnginesBookmarklet is a low tech solution to this need by offering you an easy way to do directly from within your browser.
 
