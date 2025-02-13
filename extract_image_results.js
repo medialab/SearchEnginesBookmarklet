@@ -1,14 +1,14 @@
 (async function(){
     artoo.injectScript("//medialab.github.io/SearchEnginesBookmarklet/FileSaver.min.js", function() {
-      artoo.injectScript("//medialab.github.io/SearchEnginesBookmarklet/dropdown.js", function() {
-      // artoo.injectScript("//localhost:4443/dropdown.js", function() {
+      //artoo.injectScript("//medialab.github.io/SearchEnginesBookmarklet/dropdown.js", function() {
+       artoo.injectScript("//localhost:4443/dropdown.js", function() {
 
         var loc = window.location,
           href = loc.href,
           query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
           search = ~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//) ? 'Google Images' : 'DuckDuckGo Images',
           styles = [
-            '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 400px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
+            '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 410px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
             '#BMoverlay h1 {display: block; font-size: 23px; font-weight: bold; margin: 0px 70px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline; font-family: monospace; box-sizing: content-box;}',
             '#BMoverlay #BMlogo {position: absolute; top: 8px; right: 8px; width: 64px; height: 64px;}',
             '#BMoverlay h2 {display: block; font-size: 17px; font-weight: bold; margin: 0px 70px 25px 0px; padding: 0; line-height: 22px; font-family: monospace;}',
@@ -140,7 +140,7 @@
         artoo.$('body').append(
           '<style>' + styles.join('\n') + '</style>' +
           '<div id="BMoverlay">' +
-            '<h1>SearchEngineBookmarklets</h1>' +
+            '<h1>SearchEnginesBookmarklets</h1>' +
             '<img id="BMlogo" src="https://medialab.github.io/SearchEnginesBookmarklet/images/duckduckgo-google-bing-baidu-256.png" alt="SEB logo" />' +
             '<h2>Extract ' + search + '</h2>' +
             '<p>Search for «&nbsp;<b id="BMquery">' + decodeURIComponent(query.replace(/\+/g, '%20')) + '</b>&nbsp;»</p>' +
