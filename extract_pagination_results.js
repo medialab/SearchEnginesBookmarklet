@@ -224,7 +224,7 @@
 
         // Google results
         if (search === 'Google') {
-          newdata = artoo.scrape("#rso .g > div[data-hveid], #rso .g[data-hveid], #rso .g > g-section-with-header > div > div, div[data-async-context] .g[data-hveid]", {
+          newdata = artoo.scrape("#rso .g > div[data-hveid], #rso .g[data-hveid], #rso .g > g-section-with-header > div > div, div[data-async-context] .g[data-hveid], #rso > div > div[data-hveid], #rso > div > div > div[data-hveid], #rso > div > div > div > div[data-hveid]", {
             name: {
               sel: 'div a[ping] h3, div a[data-ved] h3',
               method: 'text'
