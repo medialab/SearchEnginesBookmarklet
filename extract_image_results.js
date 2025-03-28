@@ -157,7 +157,7 @@
             '<p class="extra">Or search for it on another supported search engine:</p>' +
             '<select id="BMdropdown" class="extra"></select>' +
             '<input class="BMredirect extra" type="button" value="Redirect Me!"></input>' +
-            '<p id="BMfooter">Powered by <a target="_blank" href="https://medialab.sciencespo.fr/">médialab Sciences Po</a> &ndash; Discover more <a target="_blank" href="https://medialab.sciencespo.fr/en/tools/">médialab tools</a>!</p>' +
+            '<p id="BMfooter">Powered by <a target="_blank" href="https://medialab.sciencespo.fr/">médialab Sciences Po</a> &ndash; Discover more <a target="_blank" href="https://medialab.sciencespo.fr/en/tools/">médialab tools</a>!<br/>Report bugs on <a target="_blank" href="https://github.com/medialab/SearchEnginesBookmarklet/issues">GitHub</a></p>' +
           '</div>'
         );
 
