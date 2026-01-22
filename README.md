@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18341711.svg)](https://doi.org/10.5281/zenodo.18341711)
+
 # SearchEnginesBookmarklet
 
 Harvesting lists of urls, titles, dates and descriptions from a query on a search engine such as Google (web, images & Scholar), DuckDuckGo (web & images), Baidu, Bing or Qwant is a recurrent need in digital methods and a hardly automatable one because of those website's restrictions towards robots.
