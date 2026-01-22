@@ -1,0 +1,34 @@
+{
+  "language": "eng",
+  "license": "GPL-3.0",
+  "title": "SearchEnginesBookmarklet",
+  "upload_type": "software",
+  "keywords": [
+    "webmining",
+    "scraping",
+    "crawling",
+    "search-engines"
+  ],
+  "creators": [
+    {
+      "orcid": "0000-0001-7698-3507",
+      "affiliation": "médialab - Sciences Po",
+      "name": "Benjamin Ooghe-Tabanou"
+    },
+    {
+      "affiliation": "médialab - Sciences Po",
+      "name": "Julien Pontoire"
+    },
+    {
+      "orcid": "0000-0003-4916-8472",
+      "affiliation": "médialab - Sciences Po",
+      "name": "Guillaume Plique"
+    },
+    {
+      "affiliation":"médialab - Sciences Po",
+      "name": "Evan Chevalerias"
+    }
+  ],
+  "access_right": "open",
+  "description": "<p>Extract list of results from search engines pages as CSV with a bookmarklet directly within the browser.</p>"
+}
