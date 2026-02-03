@@ -175,21 +175,21 @@
         function scrape_scholar() {
           let results = [];
           let scrap = document.querySelectorAll('div[class="gs_r gs_or gs_scl"]');
-        
+
           for (let i = 0; i < scrap.length; i++) {
             let ele = scrap[i];
             let try_type = ele.querySelector('span.gs_ct1');
             let type = try_type ? try_type.textContent.replace(/[\[\]]/g, '') : "";
-        
+
             let nameElement = ele.querySelector('h3.gs_rt');
             let nameElementClone = nameElement.cloneNode(true);
             let spansToRemove = nameElementClone.querySelectorAll('[class*="gs_c"]');
             spansToRemove.forEach(span => span.remove());
             let name = nameElementClone.textContent.trim();
-        
+
             let try_link = ele.querySelector('h3.gs_rt a');
             let link = try_link ? try_link.href : "";
-        
+
             let try_desc = ele.querySelector('div.gs_rs');
             let desc = try_desc ? try_desc.textContent.replace(/[\r\n]+/gm, "") : "";
             let infos = ele.querySelector('div.gs_a').textContent;
@@ -198,14 +198,14 @@
             let date = try_date ? try_date[0] : "";
             let journal = infos_tab.at(-1).trim();
             let authors = infos_tab[0];
-        
+
             let n_quote = ele.querySelector('div[class="gs_fl gs_flb"] a:nth-of-type(3)').textContent;
             if (/\d+/.test(n_quote)) {
               n_quote = n_quote.match(/\d+/)[0];
             } else {
               n_quote = "";
             }
-        
+
             results.push({
               name: name,
               url: link,
@@ -217,10 +217,10 @@
               n_quote: n_quote
             });
           }
-        
+
           return results;
         }
-        
+
 
         // Google results
         if (search === 'Google') {
@@ -252,6 +252,9 @@
               }
             }
           });
+          page = artoo.scrape("td > span", {page : function($) {
+            return $(this).parent().text();
+          }}).slice(-1)[0].page;
         } else if (search === 'Google Scholar'){
           newdata = scrape_scholar();
         } else {
@@ -355,7 +358,7 @@
         });
 
         artoo.$("#BMoverlay .BMcontinue").on('click', function(){
-          redirect(total, start + total);
+          redirect(total, start + (search == "Google" ? 10 : total));
         });
 
         artoo.$("#BMoverlay .BMredirect").on('click', async function(){
