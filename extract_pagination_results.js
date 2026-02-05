@@ -305,7 +305,13 @@
         add_values_dropdown(search);
 
         var refresh = function(){
-          var donepages = artoo.store(storage + '-pages').sort().join('-');
+          var donepages_array = artoo.store(storage + '-pages').sort(function(a, b) {
+            return a - b;
+          });
+          var donepages = donepages_array[0]
+          if (donepages_array.length > 1){
+             donepages = donepages + '-' + donepages_array[donepages_array.length - 1];
+          }
           if (!~artoo.store(storage + '-pages').indexOf(page)) {
             fulldata = pastdata.concat(newdata);
             artoo.store.concatTo(storage + '-pages', page);
