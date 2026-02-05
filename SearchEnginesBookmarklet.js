@@ -39,7 +39,12 @@
   };
 
   // Google
-  if(~href.search(/:\/\/(www|scholar)?\.google\.[^/]+\//)){
+  if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)) {
+    injectScriptWithArtoo("q", ~href.search("&udm=2") ? images : pagination)
+  }
+
+  // Google Scholar
+  else if(~href.search(/:\/\/([^.]+\.)?scholar\.google\.[^/]+\//)){
     injectScriptWithArtoo("q", ~href.search("&udm=2") ? images : (href.includes("num=") ? pagination : moreResults));
   }
 

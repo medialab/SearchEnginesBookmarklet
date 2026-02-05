@@ -37,7 +37,7 @@
             search = "Google Scholar";
             nextPageLink = '.gs_ico.gs_ico_nav_next';
           } else {
-            total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 100);
+            total = (~href.search(/num=/) ? parseInt(href.replace(/^.*[#?&]num=(\d+).*$/, '$1')) : 10);
             search = "Google";
             nextPageLink = "#pnnext";
           }
