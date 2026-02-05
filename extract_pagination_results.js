@@ -255,6 +255,10 @@
           page = artoo.scrape("td > span", {page : function($) {
             return $(this).parent().text();
           }}).slice(-1)[0].page;
+          next_page_urls = artoo.scrape("a#pnnext", {next_url : 'href'})
+          if (next_page_urls.length>0) {
+            next_start = next_page_urls[0].next_url.match(/(?<=&start=)(\d*)/)[0];
+          }
         } else if (search === 'Google Scholar'){
           newdata = scrape_scholar();
         } else {
@@ -358,7 +362,7 @@
         });
 
         artoo.$("#BMoverlay .BMcontinue").on('click', function(){
-          redirect(total, start + (search == "Google" ? 10 : total));
+          redirect(total, (search == "Google" ? next_start : start + total));
         });
 
         artoo.$("#BMoverlay .BMredirect").on('click', async function(){
