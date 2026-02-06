@@ -257,7 +257,12 @@
           }}).slice(-1)[0].page;
           next_page_urls = artoo.scrape("a#pnnext", {next_url : 'href'})
           if (next_page_urls.length>0) {
-            next_start = next_page_urls[0].next_url.match(/(?<=&start=)(\d*)/)[0];
+            match = next_page_urls[0].next_url.match(/&start=(\d+)/);
+            if (match && match.length > 1) {
+              next_start = match[1];
+            } else {
+              throw new Error("Couldn't find the start parameter in the next page URL");
+            }
           }
         } else if (search === 'Google Scholar'){
           newdata = scrape_scholar();
