@@ -38,14 +38,14 @@
     body.appendChild(a);
   };
 
-  // Google
-  if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)) {
-    injectScriptWithArtoo("q", ~href.search("&udm=2") ? images : pagination)
+  // Google Scholar
+  if(~href.search(/:\/\/([^.]+\.)?scholar\.google\.[^/]+\//)){
+    injectScriptWithArtoo("q", href.includes("num=") ? pagination : moreResults);
   }
 
-  // Google Scholar
-  else if(~href.search(/:\/\/([^.]+\.)?scholar\.google\.[^/]+\//)){
-    injectScriptWithArtoo("q", href.includes("num=") ? pagination : moreResults);
+  // Google
+  else if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)) {
+    injectScriptWithArtoo("q", ~href.search("&udm=2") ? images : pagination)
   }
 
   // DuckDuckGo
