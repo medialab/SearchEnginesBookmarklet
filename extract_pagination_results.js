@@ -313,9 +313,10 @@
           var donepages_array = artoo.store(storage + '-pages').sort(function(a, b) {
             return a - b;
           });
-          var donepages = donepages_array[0]
+          var donepages = donepages_array.join('-');
+          var donepages_string = donepages_array[0];
           if (donepages_array.length > 1){
-             donepages = donepages + '-' + donepages_array[donepages_array.length - 1];
+             donepages_string = donepages_string + '-' + donepages_array[donepages_array.length - 1];
           }
           if (!~artoo.store(storage + '-pages').indexOf(page)) {
             fulldata = pastdata.concat(newdata);
@@ -328,7 +329,7 @@
           }
           artoo.$('#BMoverlay .BMdownloadAll').val('Download complete CSV with all ' + fulldata.length + ' results');
           if (pastdata.length) {
-            artoo.$('#BMoverlay .BMoldresults').html('(already ' + pastdata.length + ' results collected<br/>from page' + (~donepages.search(/\-/) ? 's ' : ' ') + donepages + ')').show();
+            artoo.$('#BMoverlay .BMoldresults').html('(already ' + pastdata.length + ' results collected<br/>from page' + (~donepages.search(/\-/) ? 's ' : ' ') + donepages_string + ')').show();
             artoo.$('#BMoverlay .BMdownloadAll, #BMoverlay .BMreset').show();
             artoo.$('#BMoverlay .BMdownload').val('Download CSV with only this page\'s results (' + newdata.length + ')');
           } else {
