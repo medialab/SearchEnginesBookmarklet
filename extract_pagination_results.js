@@ -264,11 +264,12 @@
 
           next_page_urls = artoo.scrape("a#pnnext", {next_url : 'href'})
           if (next_page_urls.length>0) {
-            match = next_page_urls[0].next_url.match(/&start=(\d+)/);
-            if (match && match.length > 1) {
+            match = next_page_urls[0].next_url.match(/&staert=(\d+)/);
+            try {
               next_start = match[1];
-            } else {
-              throw new Error("Couldn't find the start parameter in the next page URL");
+            } catch (e) {
+              window.alert('Couldn\'t find the start parameter in the next page URL.\n\nThis is likely due to a change in the structure of Google search result pages.\n\nPlease report this issue to the developers on https://github.com/medialab/SearchEnginesBookmarklet/issues/ so they can fix it.');
+              throw(e);
             }
           }
         } else if (search === 'Google Scholar'){
