@@ -252,9 +252,16 @@
               }
             }
           });
-          page = artoo.scrape("td > span", {page : function($) {
+          boxes_similars_to_pages = artoo.scrape("td > span", {text : function($) {
             return $(this).parent().text();
-          }}).slice(-1)[0].page;
+          }});
+          for (let i = 0; i < boxes_similars_to_pages.length; i++) {
+            let txt = boxes_similars_to_pages[i].text;
+            if (txt !== "") {
+              page = txt;
+            }
+          }
+
           next_page_urls = artoo.scrape("a#pnnext", {next_url : 'href'})
           if (next_page_urls.length>0) {
             match = next_page_urls[0].next_url.match(/&start=(\d+)/);
