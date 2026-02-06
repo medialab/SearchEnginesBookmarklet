@@ -368,7 +368,7 @@
         });
 
         artoo.$("#BMoverlay .BMcontinue").on('click', function(){
-          redirect(total, (search == "Google" ? next_start : start + total));
+          redirect(total, search === "Google" ? next_start : start + total);
         });
 
         artoo.$("#BMoverlay .BMredirect").on('click', async function(){

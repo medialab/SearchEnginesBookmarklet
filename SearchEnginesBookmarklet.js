@@ -45,7 +45,7 @@
 
   // Google Scholar
   else if(~href.search(/:\/\/([^.]+\.)?scholar\.google\.[^/]+\//)){
-    injectScriptWithArtoo("q", ~href.search("&udm=2") ? images : (href.includes("num=") ? pagination : moreResults));
+    injectScriptWithArtoo("q", href.includes("num=") ? pagination : moreResults);
   }
 
   // DuckDuckGo
