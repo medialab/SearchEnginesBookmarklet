@@ -255,16 +255,11 @@
           boxes_similars_to_pages = artoo.scrape("td > span", {text : function($) {
             return $(this).parent().text();
           }});
-          for (let i = 0; i < boxes_similars_to_pages.length; i++) {
-            let txt = boxes_similars_to_pages[i].text;
-            if (txt !== "") {
-              page = txt;
-            }
-          }
+          page = boxes_similars_to_pages.filter(box => box.text !== '')[0].text;
 
           next_page_urls = artoo.scrape("a#pnnext", {next_url : 'href'})
           if (next_page_urls.length>0) {
-            match = next_page_urls[0].next_url.match(/&staert=(\d+)/);
+            match = next_page_urls[0].next_url.match(/&start=(\d+)/);
             try {
               next_start = match[1];
             } catch (e) {
