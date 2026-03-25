@@ -5,7 +5,7 @@
 
         var loc = window.location,
           href = loc.href,
-          query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined),
+          query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]*).*$/, '$1') : ""),
           search = ~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//) ? 'Google Images' : 'DuckDuckGo Images',
           styles = [
             '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 410px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
@@ -63,7 +63,7 @@
             scrap = Array.from(document.querySelectorAll(path));
             const lastElement = scrap[scrap.length - 1];
             const img = search === 'Google Images'
-              ? lastElement.querySelector("div[jsslot] g-img > img")
+              ? lastElement.querySelector("div[jsslot] g-img > img, div[data-hveid] img")
               : lastElement.querySelector("img[class]");
 
             verif = img && img.getAttribute("src").includes("data:image/gif;base64,");
@@ -96,13 +96,14 @@
 
         async function scrape(n){
           let results = [],
-            box_path = search === 'Google Images' ? "div[id='search'] div[data-lpage]" : "div[class='tile  tile--img  has-detail']",
-            scrap = await scrap_n_results(n, box_path),
+            box_path = search === 'Google Images' ? "div[id='search'] div[data-lpage], div[id='search'] div[data-snm]" : "div[class='tile  tile--img  has-detail']",
+            max_N = /&udm=[24]/.test(href) ? document.querySelectorAll(box_path).length : n,
+            scrap = await scrap_n_results(max_N, box_path),
             ele,
             verif = new Set();
 
-          while ((ele = scrap.shift()) && results.length < n) {
-            let path = search === 'Google Images' ? "div[jsslot] g-img>img":"img[class]",
+          while ((ele = scrap.shift()) && results.length < max_N) {
+            let path = search === 'Google Images' ? "div[jsslot] g-img>img, div[data-hveid] img" : "img[class]",
               image_box = ele.querySelector(path),
               image_url = image_box.getAttribute("src").replace(/^data:image.*$/, '').replace(/^\/\//, 'https://'),
               image = await get_image(image_box),
@@ -110,7 +111,7 @@
               height = image_box.naturalHeight;
 
             if (!verif.has(image)) {
-              let url = ele.querySelector(search === 'Google Images' ? "div[jsaction]>a" : "a").href,
+              let url = ele.querySelector(search === 'Google Images' ? "div[jsaction]>a, div[data-snc] a" : "a").href,
                 desc = image_box.getAttribute("alt");
               results.push({
                 image_url: image_url,
@@ -123,7 +124,7 @@
               verif.add(image);
             }
 
-            updateProgress(results.length, n);
+            updateProgress(results.length, max_N);
           }
           return results;
         }

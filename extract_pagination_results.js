@@ -29,7 +29,7 @@
 
 
         if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)){
-          query = href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1');
+          query = href.replace(/^.*[#?&]q=([^#?&]*).*$/, '$1');
           hlang = (~href.search(/hl=/) ? href.replace(/^.*[#?&]hl=([^#?&]+).*$/, '$1') : (($('html').lang) ? $('html').lang.replace(/-.*$/, '') : 'fr'));
           start = (~href.search(/start=/) ? parseInt(href.replace(/^.*[#?&]start=(\d+).*$/, '$1')) : 0);
           if(~href.search(/:\/\/([^.]+\.)?scholar\.google\.[^/]+\//)){
@@ -42,7 +42,7 @@
             nextPageLink = "#pnnext";
           }
         } else if(~href.search(/:\/\/([^.]+\.)?bing\.[^/]+\//)){
-          query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : undefined);
+          query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : "");
           hlang = (~href.search(/setlang=/) ? href.replace(/^.*[#?&]setlang=([^#?&]+).*$/, '$1') : navigator.language.replace(/-.*$/, ''));
           total = (~href.search(/count=/) ? parseInt(href.replace(/^.*[#?&]count=(\d+).*$/, '$1')) : 30);
           start = (~href.search(/first=/) ? parseInt(href.replace(/^.*[#?&]first=(\d+).*$/, '$1')) : 0);
@@ -50,7 +50,7 @@
           nextPageLink = ".sw_next";
 
         } else if(~href.search(/:\/\/([^.]+\.)?baidu\.[^/]+\//)){
-          query = (~href.search(/[#?&]wd=/) ? href.replace(/^.*[#?&]wd=([^#?&]+).*$/, '$1') : undefined);
+          query = (~href.search(/[#?&]wd=/) ? href.replace(/^.*[#?&]wd=([^#?&]+).*$/, '$1') : "");
           hlang = 'zh';
           total = (~href.search(/rn=/) ? parseInt(href.replace(/^.*[#?&]rn=(\d+).*$/, '$1')) : 50);
           start = (~href.search(/pn=/) ? parseInt(href.replace(/^.*[#?&]pn=(\d+).*$/, '$1')) : 0);
@@ -255,8 +255,11 @@
           boxes_similars_to_pages = artoo.scrape("td > span", {text : function($) {
             return $(this).parent().text();
           }});
+          try {
           page = boxes_similars_to_pages.filter(box => box.text !== '')[0].text;
-
+          } catch(e) {
+            page = 0;
+          }
           next_page_urls = artoo.scrape("a#pnnext", {next_url : 'href'})
           if (next_page_urls.length>0) {
             match = next_page_urls[0].next_url.match(/&start=(\d+)/);

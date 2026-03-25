@@ -18,9 +18,9 @@
 
   const injectScriptWithArtoo = function(queryArg, script){
     const searchRegexp = new RegExp("[#?&]" + queryArg + "="),
-      replaceRegexp = new RegExp("^.*[#?&]" + queryArg + "=([^#?&]+).*$"),
+      replaceRegexp = new RegExp("^.*[#?&]" + queryArg + "=([^#?&]*).*$"),
       query = (~href.search(searchRegexp) ? href.replace(replaceRegexp, '$1') : undefined);
-    if (!query) return window.alert("Please input your search query first.");
+    if (query === undefined && !/&udm=[24]/.test(href)) return window.alert("Please input your search query first.");
 
     var body = document.getElementsByTagName("body")[0];
     if (!body) {
@@ -45,7 +45,7 @@
 
   // Google
   else if(~href.search(/:\/\/([^.]+\.)?google\.[^/]+\//)) {
-    injectScriptWithArtoo("q", ~href.search("&udm=2") ? images : pagination)
+    injectScriptWithArtoo("q", ~href.search("&udm=2") || ~href.search("&udm=4") ? images : pagination)
   }
 
   // DuckDuckGo
