@@ -56,6 +56,22 @@
           start = (~href.search(/pn=/) ? parseInt(href.replace(/^.*[#?&]pn=(\d+).*$/, '$1')) : 0);
           search = "Baidu";
           nextPageLink = "a.n:last-child";
+
+        } else if(~href.search(/:\/\/([^.]+\.)?search\.naver\.[^/]+\//)){
+          query = (~href.search(/[#?&]query=/) ? href.replace(/^.*[#?&]query=([^#?&]+).*$/, '$1') : "");
+          hlang = 'ko';
+          total = 15;
+          start = (~href.search(/[#?&]page=/) ? (parseInt(href.replace(/^.*[#?&]page=(\d+).*$/, '$1')) - 1) * total : 0);
+          search = "Naver";
+          nextPageLink = 'a.btn_next[aria-disabled="false"]';
+
+        } else if(~href.search(/:\/\/([^.]+\.)?search\.daum\.[^/]+\//)){
+          query = (~href.search(/[#?&]q=/) ? href.replace(/^.*[#?&]q=([^#?&]+).*$/, '$1') : "");
+          hlang = 'ko';
+          total = 10;
+          start = (~href.search(/[#?&]p=/) ? (parseInt(href.replace(/^.*[#?&]p=(\d+).*$/, '$1')) - 1) * total : 0);
+          search = "Daum";
+          nextPageLink = 'button.btn_next';
         }
 
         Object.keys(translations).forEach(function(k) {
@@ -98,6 +114,17 @@
             } else if (/昨天(\d+:\d+)/.test(date)) {
               parsed = /昨天(\d+:\d+)/.exec(date);
               res = moment().subtract(1, 'days').format("YYYY-MM-DD") + ' ' + parsed[1];
+            } else if (/(\d+)일 전/.test(date)) {
+              parsed = /(\d+)일 전/.exec(date);
+              res = moment().subtract(parsed[1], 'days').toISOString().slice(0, 10);
+            } else if (/(\d+)시간 전/.test(date)) {
+              parsed = /(\d+)시간 전/.exec(date);
+              res = moment().subtract(parsed[1], 'hours').toISOString().slice(0, 10);
+            } else if (/어제/.test(date)) {
+              res = moment().subtract(1, 'days').format("YYYY-MM-DD");
+            } else if (/(\d+)주 전/.test(date)) {
+              parsed = /(\d+)주 전/.exec(date);
+              res = moment().subtract(parsed[1], 'weeks').toISOString().slice(0, 10);
             } else {
               parsed = /(^|\s)(\d+)\s(\w+)(\s|$)/.exec(date.replace(/^Auj\.?/, "il y a 0 jours"));
               if (parsed) {
@@ -169,6 +196,44 @@
               date: relative_date_converter(date.trim())
             });
           }
+
+          // Naver results
+          if (search === 'Naver') {
+            let containers = document.querySelectorAll('.fds-web-doc-root');
+            containers.forEach(function(ele) {
+              let titleLink = ele.querySelector('a[data-heatmap-target=".link"]');
+              if (!titleLink) return;
+              let titleEl = ele.querySelector('span.sds-comps-text-type-headline1');
+              let snippetEl = ele.querySelector('span.sds-comps-text-content');
+              let dateEl = ele.querySelector('span.sds-comps-text-left span.sds-comps-text-type-body1');
+              results.push({
+                name: titleEl ? titleEl.innerText.trim() : "",
+                url: titleLink.href,
+                description: snippetEl ? snippetEl.innerText.trim() : "",
+                date: dateEl ? relative_date_converter(dateEl.innerText.trim()) : ""
+              });
+            });
+          }
+
+          // Daum results
+          if (search === 'Daum') {
+            let cards = document.querySelectorAll('c-doc-web');
+            cards.forEach(function(ele) {
+              let titleEl = ele.querySelector('c-title[slot="title"]');
+              let descEl = ele.querySelector('c-contents-desc[slot="contents"]');
+              if (!titleEl || !titleEl.getAttribute('data-href')) return;
+              let card = ele.closest('c-card');
+              let dateEl = card ? card.querySelector('span.txt_desc') : null;
+              let dateText = dateEl ? dateEl.textContent.trim() : "";
+              results.push({
+                name: titleEl.textContent.trim(),
+                url: titleEl.getAttribute('data-href'),
+                description: descEl ? descEl.textContent.trim() : "",
+                date: dateText && /\d{4}\.\d{2}/.test(dateText) ? relative_date_converter(dateText) : ""
+              });
+            });
+          }
+
           return results;
         }
 
@@ -354,6 +419,10 @@
             window.location.href = loc.protocol + "//" + loc.hostname + "/s?wd=" + query + '&rn=' + tot + '&pn=' + st;
           } else if (search === 'Google Scholar') {
             window.location.href = loc.protocol + "//" + loc.hostname + "/scholar?q=" + query + '&hl=' + hlang + "&num=" + tot + "&start=" + st;
+          } else if (search === 'Naver') {
+            window.location.href = loc.protocol + "//" + loc.hostname + "/search.naver?where=web&sm=tab_pge&query=" + query + "&page=" + (st/tot + 1) + "&start=" + (st + 1);
+          } else if (search === 'Daum') {
+            window.location.href = loc.protocol + "//" + loc.hostname + "/search?w=fusion&q=" + query + "&p=" + (st/tot + 1);
           }
         };
 

@@ -69,5 +69,15 @@
     injectScriptWithArtoo("q", href.includes("count=") ? pagination : moreResults);
   }
 
-  else window.alert("You can only use this bookmarklet on Google (web, images & Scholar), DuckDuckGo (web & images), Baidu, Qwant and Bing.");
+  // Naver
+  else if(~href.search(/:\/\/([^.]+\.)?search\.naver\.[^/]+\//)){
+    injectScriptWithArtoo("query", pagination);
+  }
+
+  // Daum
+  else if(~href.search(/:\/\/([^.]+\.)?search\.daum\.[^/]+\//)){
+    injectScriptWithArtoo("q", pagination);
+  }
+
+  else window.alert("You can only use this bookmarklet on Google (web, images & Scholar), DuckDuckGo (web & images), Baidu, Qwant, Bing, Naver and Daum.");
 }).call(this);

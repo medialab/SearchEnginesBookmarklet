@@ -1,5 +1,5 @@
 function gen_dropdown_list(search){
-  let dropdown_list = ['Google', 'DuckDuckGo', 'Bing', 'Qwant', 'Baidu', 'Google Scholar', 'Google Images', 'DuckDuckGo Images'];
+  let dropdown_list = ['Google', 'DuckDuckGo', 'Bing', 'Qwant', 'Baidu', 'Naver', 'Daum', 'Google Scholar', 'Google Images', 'DuckDuckGo Images'];
   dropdown_list = dropdown_list.filter(item => item !== search);
   return dropdown_list;
 };
@@ -43,6 +43,12 @@ function redirect_engine(engine, query){
       break;
     case "DuckDuckGo Images":
       window.location.href = "https://duckduckgo.com/?t=h_&q=" + query + "&iax=images&ia=images";
+      break;
+    case "Naver":
+      window.location.href = "https://search.naver.com/search.naver?where=nexearch&query=" + query;
+      break;
+    case "Daum":
+      window.location.href = "https://search.daum.net/search?w=tot&q=" + query;
       break;
     default:
       break;
