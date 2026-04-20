@@ -199,37 +199,51 @@
 
           // Naver results
           if (search === 'Naver') {
-            let containers = document.querySelectorAll('.fds-web-doc-root');
+            let containers = document.querySelectorAll('.fds-web-doc-root, .bx, .news_wrap, .total_wrap');
             containers.forEach(function(ele) {
-              let titleLink = ele.querySelector('a[data-heatmap-target=".link"]');
-              if (!titleLink) return;
-              let titleEl = ele.querySelector('span.sds-comps-text-type-headline1');
-              let snippetEl = ele.querySelector('span.sds-comps-text-content');
-              let dateEl = ele.querySelector('span.sds-comps-text-left span.sds-comps-text-type-body1');
+              let titleEl = ele.querySelector('.sds-comps-text-type-headline1, .news_tit, .link_tit, .api_txt_lines.total_tit, a[data-heatmap-target*="title"]');
+              if (!titleEl) return;
+              let dateText = ele.querySelector('.sds-comps-text-left .sds-comps-text-type-body1, .api_txt_date, .txt_date, .sub_txt')?.innerText.trim() || "";
+              let snippetEl = ele.querySelector('.sds-comps-text-content, .dsc_txt, .api_txt_lines, .fds-comps-text-type-body2');
+              let descText = snippetEl ? snippetEl.innerText.trim() : (ele.querySelector('.sds-comps-text-type-body1')?.innerText.trim() || "");
+              if (descText === dateText) descText = (dateText.length > 11) ? dateText.substring(11).trim() : "";
               results.push({
-                name: titleEl ? titleEl.innerText.trim() : "",
-                url: titleLink.href,
-                description: snippetEl ? snippetEl.innerText.trim() : "",
-                date: dateEl ? relative_date_converter(dateEl.innerText.trim()) : ""
+                name: titleEl.innerText.replace(/\s+/g, ' ').trim(),
+                url: titleEl.href || (ele.querySelector('a') ? ele.querySelector('a').href : ""),
+                description: descText.replace(/\s+/g, ' ').trim(),
+                date: relative_date_converter(dateText.substring(0, 11).trim())
               });
             });
           }
 
           // Daum results
           if (search === 'Daum') {
-            let cards = document.querySelectorAll('c-doc-web');
+            let cards = document.querySelectorAll('c-doc-web, c-doc-news, c-doc-blog, .item-video');
             cards.forEach(function(ele) {
-              let titleEl = ele.querySelector('c-title[slot="title"]');
-              let descEl = ele.querySelector('c-contents-desc[slot="contents"]');
-              if (!titleEl || !titleEl.getAttribute('data-href')) return;
-              let card = ele.closest('c-card');
-              let dateEl = card ? card.querySelector('span.txt_desc') : null;
-              let dateText = dateEl ? dateEl.textContent.trim() : "";
+              let titleEl = ele.querySelector('c-title[slot="title"], .tit_main a');
+              let descEl = ele.querySelector('c-contents-desc[slot="contents"], c-contents-news[slot="contents"], .dsc_main');
+              if (!titleEl) return;
+              let url = titleEl.getAttribute('data-href') || titleEl.href;
+              if (!url) return;
+              let dateText = "";
+              let dateCandidate = ele.querySelector('span[slot="date"], .txt_info, .reg_date, .info_item');
+              if (dateCandidate) {
+                dateText = dateCandidate.textContent.trim();
+              } else {
+                let spans = ele.querySelectorAll('span');
+                for (let span of spans) {
+                  if (/\d{4}\.\d{2}/.test(span.textContent) || /전$/.test(span.textContent)) {
+                    dateText = span.textContent.trim();
+                    break;
+                  }
+                }
+              }
+
               results.push({
                 name: titleEl.textContent.trim(),
-                url: titleEl.getAttribute('data-href'),
-                description: descEl ? descEl.textContent.trim() : "",
-                date: dateText && /\d{4}\.\d{2}/.test(dateText) ? relative_date_converter(dateText) : ""
+                url: url,
+                description: descEl ? descEl.textContent.trim().replace(/\s+/g, ' ') : "",
+                date: dateText ? relative_date_converter(dateText) : ""
               });
             });
           }
