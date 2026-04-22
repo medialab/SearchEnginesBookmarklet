@@ -16,13 +16,14 @@
           query, hlang, total, start, search, nextPageLink,
           styles = [
             '#BMoverlay {z-index: 1000000; position: fixed; top: 150px; right: 10px; background-color: white; width: 410px; border-radius: 5px; box-shadow: 1px 1px 5px 3px #656565; padding: 15px; text-align: center; color: black; font-family: monospace; box-sizing: content-box; text-rendering: geometricprecision;}',
-            '#BMoverlay h1 {display: block; font-size: 23px; font-weight: bold; margin: 0px 70px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline; font-family: monospace; box-sizing: content-box;}',
+            '#BMoverlay h1 {display: block; font-size: 23px; font-weight: bold; margin: 0px 70px 15px 0px; padding: 0; line-height: 22px; text-decoration: underline; font-family: monospace; box-sizing: content-box; word-break: normal;}',
             '#BMoverlay #BMlogo {position: absolute; top: 8px; right: 8px; width: 64px; height: 64px;}',
-            '#BMoverlay h2 {display: block; font-size: 17px; font-weight: bold; margin: 0px 70px 25px 0px; padding: 0; line-height: 22px; font-family: monospace;}',
+            '#BMoverlay h2 {display: block; font-size: 17px; font-weight: bold; margin: 0px 70px 25px 0px; padding: 0; line-height: 22px; font-family: monospace; float: none;}',
             '#BMoverlay p {display: block; font-size: 14px; font-family: monospace; margin: 12px 0; padding: 0; line-height: 16px;}',
+            '#BMoverlay b {font-family: monospace;}',
             '#BMoverlay #BMdropdown {margin: 0 20px 0 10px; padding: 0 5px; height: 26px; color: unset; border: 1px solid #555; border-radius: 2px; background-color: #EEE; font-family: monospace;}',
-            '#BMoverlay .extra {color: grey; margin-bottom: 0; font-size: 0.9em;}',
-            '#BMoverlay input[type="button"] {margin: 5px 0; padding: 5px 10px; font-family: monospace; font-size: 12px; font-weight: bold; border: 1px solid #555; border-radius: 2px; background-color: #EEE; line-height: 14px; cursor: pointer;}',
+            '#BMoverlay .extra {color: grey; margin-bottom: 0; font-size: 13px;}',
+            '#BMoverlay input[type="button"] {margin: 5px 0; padding: 5px 10px; font-family: monospace; font-size: 12px; font-weight: bold; border: 1px solid #555; border-radius: 2px; background-color: #EEE; line-height: 14px; cursor: pointer; vertical-align: initial;}',
             '#BMoverlay #BMfooter {margin: 15px 0 0 0; font-size: 10px; color: #555;}',
             '#BMoverlay #BMfooter a, #BMoverlay #BMfooter a:visited {color: black; text-decoration: underline; color: #555;}'
           ];
