@@ -208,9 +208,12 @@
               let snippetEl = ele.querySelector('.sds-comps-text-content, .dsc_txt, .api_txt_lines, .fds-comps-text-type-body2');
               let descText = snippetEl ? snippetEl.innerText.trim() : (ele.querySelector('.sds-comps-text-type-body1')?.innerText.trim() || "");
               if (descText === dateText) descText = (dateText.length > 11) ? dateText.substring(11).trim() : "";
+              let resultUrl = titleEl.href || (ele.querySelector('a') ? ele.querySelector('a').href : "");
+              if (/^https:\/\/inflow\.pay\.naver\.com\/.*retUrl=/.test(resultUrl))
+                resultUrl = urldecode(resultUrl.replace(/^.*&retUrl=(.*?)(&.*)?$/, "$1"));
               results.push({
                 name: titleEl.innerText.replace(/\s+/g, ' ').trim(),
-                url: titleEl.href || (ele.querySelector('a') ? ele.querySelector('a').href : ""),
+                url: resultUrl,
                 description: descText.replace(/\s+/g, ' ').trim(),
                 date: relative_date_converter(dateText.substring(0, 11).trim())
               });
