@@ -197,61 +197,65 @@
               date: relative_date_converter(date.trim())
             });
           }
+          return results;
+        }
 
-          // Naver results
-          if (search === 'Naver') {
-            let containers = document.querySelectorAll('.fds-web-doc-root, .bx, .news_wrap, .total_wrap');
-            containers.forEach(function(ele) {
-              let titleEl = ele.querySelector('.sds-comps-text-type-headline1, .news_tit, .link_tit, .api_txt_lines.total_tit, a[data-heatmap-target*="title"]');
-              if (!titleEl) return;
-              let dateText = ele.querySelector('.sds-comps-text-left .sds-comps-text-type-body1, .api_txt_date, .txt_date, .sub_txt')?.innerText.trim() || "";
-              let snippetEl = ele.querySelector('.sds-comps-text-content, .dsc_txt, .api_txt_lines, .fds-comps-text-type-body2');
-              let descText = snippetEl ? snippetEl.innerText.trim() : (ele.querySelector('.sds-comps-text-type-body1')?.innerText.trim() || "");
-              if (descText === dateText) descText = (dateText.length > 11) ? dateText.substring(11).trim() : "";
-              let resultUrl = titleEl.href || (ele.querySelector('a') ? ele.querySelector('a').href : "");
-              if (/^https:\/\/inflow\.pay\.naver\.com\/.*retUrl=/.test(resultUrl))
-                resultUrl = urldecode(resultUrl.replace(/^.*&retUrl=(.*?)(&.*)?$/, "$1"));
-              results.push({
-                name: titleEl.innerText.replace(/\s+/g, ' ').trim(),
-                url: resultUrl,
-                description: descText.replace(/\s+/g, ' ').trim(),
-                date: relative_date_converter(dateText.substring(0, 11).trim())
-              });
+        // Naver results
+        function scrape_naver() {
+          let results = [];
+          let containers = document.querySelectorAll('.fds-web-doc-root, .bx, .news_wrap, .total_wrap');
+          containers.forEach(function(ele) {
+            let titleEl = ele.querySelector('.sds-comps-text-type-headline1, .news_tit, .link_tit, .api_txt_lines.total_tit, a[data-heatmap-target*="title"]');
+            if (!titleEl) return;
+            let dateText = ele.querySelector('.sds-comps-text-left .sds-comps-text-type-body1, .api_txt_date, .txt_date, .sub_txt')?.innerText.trim() || "";
+            let snippetEl = ele.querySelector('.sds-comps-text-content, .dsc_txt, .api_txt_lines, .fds-comps-text-type-body2');
+            let descText = snippetEl ? snippetEl.innerText.trim() : (ele.querySelector('.sds-comps-text-type-body1')?.innerText.trim() || "");
+            if (descText === dateText) descText = (dateText.length > 11) ? dateText.substring(11).trim() : "";
+            let resultUrl = titleEl.href || (ele.querySelector('a') ? ele.querySelector('a').href : "");
+            if (/^https:\/\/inflow\.pay\.naver\.com\/.*retUrl=/.test(resultUrl))
+              resultUrl = urldecode(resultUrl.replace(/^.*&retUrl=(.*?)(&.*)?$/, "$1"));
+            results.push({
+              name: titleEl.innerText.replace(/\s+/g, ' ').trim(),
+              url: resultUrl,
+              description: descText.replace(/\s+/g, ' ').trim(),
+              date: relative_date_converter(dateText.substring(0, 11).trim())
             });
-          }
+          });
+          return results;
+        }
 
-          // Daum results
-          if (search === 'Daum') {
-            let cards = document.querySelectorAll('c-doc-web, c-doc-news, c-doc-blog, .item-video');
-            cards.forEach(function(ele) {
-              let titleEl = ele.querySelector('c-title[slot="title"], .tit_main a');
-              let descEl = ele.querySelector('c-contents-desc[slot="contents"], c-contents-news[slot="contents"], .dsc_main');
-              if (!titleEl) return;
-              let url = titleEl.getAttribute('data-href') || titleEl.href;
-              if (!url) return;
-              let dateText = "";
-              let dateCandidate = ele.querySelector('span[slot="date"], .txt_info, .reg_date, .info_item');
-              if (dateCandidate) {
-                dateText = dateCandidate.textContent.trim();
-              } else {
-                let spans = ele.querySelectorAll('span');
-                for (let span of spans) {
-                  if (/\d{4}\.\d{2}/.test(span.textContent) || /전$/.test(span.textContent)) {
-                    dateText = span.textContent.trim();
-                    break;
-                  }
+        // Daum results
+        function scrape_daum(pastdata) {
+          let results = [];
+          let done = {};
+          if (pastdata.length) pastdata.forEach(x => done[x.url] = true);
+          let cards = document.querySelectorAll('c-doc-web, c-doc-news, c-doc-blog, .item-video');
+          cards.forEach(function(ele) {
+            let titleEl = ele.querySelector('c-title[slot="title"], .tit_main a');
+            if (!titleEl) return;
+            let url = titleEl.getAttribute('data-href') || titleEl.href;
+            if (!url || done[url]) return;
+            let descEl = ele.querySelector('c-contents-desc[slot="contents"], c-contents-news[slot="contents"], .dsc_main');
+            let dateText = "";
+            let dateCandidate = ele.querySelector('span[slot="date"], .txt_info, .reg_date, .info_item');
+            if (dateCandidate) {
+              dateText = dateCandidate.textContent.trim();
+            } else {
+              let spans = ele.querySelectorAll('span');
+              for (let span of spans) {
+                if (/\d{4}\.\d{2}/.test(span.textContent) || /전$/.test(span.textContent)) {
+                  dateText = span.textContent.trim();
+                  break;
                 }
               }
-
-              results.push({
-                name: titleEl.textContent.trim(),
-                url: url,
-                description: descEl ? descEl.textContent.trim().replace(/\s+/g, ' ') : "",
-                date: dateText ? relative_date_converter(dateText) : ""
-              });
+            }
+            results.push({
+              name: titleEl.textContent.trim(),
+              url: url,
+              description: descEl ? descEl.textContent.trim().replace(/\s+/g, ' ') : "",
+              date: dateText ? relative_date_converter(dateText) : ""
             });
-          }
-
+          });
           return results;
         }
 
@@ -304,6 +308,15 @@
           return results;
         }
 
+        artoo.store.concatTo = function(key, arr) {
+          artoo.store.set(key, artoo.store(key).concat(arr));
+        }
+
+        if (artoo.store(storage) !== storageKey || page === 1) {
+          initStore();
+        } else {
+          pastdata = artoo.store(storage + '-data') || [];
+        }
 
         // Google results
         if (search === 'Google') {
@@ -355,18 +368,12 @@
           }
         } else if (search === 'Google Scholar'){
           newdata = scrape_scholar();
+        } else if (search === 'Naver'){
+          newdata = scrape_naver();
+        } else if (search === 'Daum'){
+          newdata = scrape_daum(pastdata);
         } else {
           newdata = scrape();
-        }
-
-        artoo.store.concatTo = function(key, arr) {
-          artoo.store.set(key, artoo.store(key).concat(arr));
-        }
-
-        if (artoo.store(storage) !== storageKey || page === 1) {
-          initStore();
-        } else {
-          pastdata = artoo.store(storage + '-data') || [];
         }
 
         const displayContinue = !!(document.querySelector(nextPageLink));
@@ -440,7 +447,7 @@
           } else if (search === 'Naver') {
             window.location.href = loc.protocol + "//" + loc.hostname + "/search.naver?where=web&sm=tab_pge&query=" + query + "&page=" + (st/tot + 1) + "&start=" + (st + 1);
           } else if (search === 'Daum') {
-            window.location.href = loc.protocol + "//" + loc.hostname + "/search?w=fusion&q=" + query + "&p=" + (st/tot + 1);
+            window.location.href = loc.protocol + "//" + loc.hostname + "/search?q=" + query + (st ? "&w=fusion&p=" + (st/tot + 1) : "");
           }
         };
 
